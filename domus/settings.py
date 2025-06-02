@@ -155,3 +155,21 @@ CHANNEL_LAYERS = {
         'BACKEND': 'channels.layers.InMemoryChannelLayer',
     },
 }
+
+if os.environ.get('RAILWAY_ENVIRONMENT'):
+    DEBUG = False
+    ALLOWED_HOSTS = ['*.railway.app', 'localhost', '127.0.0.1']
+    
+    # Use environment variable for secret key in production
+    SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-^4@@&s7jy&%9rl-_6$=qgg-4os8%_i$-se)_)isxo1$t@wi*u9')
+    
+    # Database configuration for Railway PostgreSQL
+    if 'DATABASE_URL' in os.environ:
+        import dj_database_url
+        DATABASES = {
+            'default': dj_database_url.parse(os.environ.get('DATABASE_URL'))
+        }
+    
+    # Static files configuration for Railway
+    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
