@@ -1,1 +1,1 @@
-web: gunicorn domus.wsgi:application --port $PORT
+web: daphne -b 0.0.0.0 -p $PORT domus.asgi:application
