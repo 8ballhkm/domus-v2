@@ -52,47 +52,4 @@
       </section>
 
     </article>
-<!-- <main class="dashboard">
-    <div class="filter-card">
-      <div class="filter-bar">
-        <select><option>State</option></select>
-        <select><option>Property Type</option></select>
-        <input type="text" placeholder="🔍 Search" class="search-input">
-        <button class="search-button">Search</button>
-      </div>
-      <div class="filter-bar">
-        <select><option>Area</option></select>
-        <select><option>Facilities</option></select>
-        <input type="text" value="Rm 1000" class="price-display" readonly>
-        <input type="range" min="0" max="5000" value="1000" class="price-slider">
-      </div>
-      <div class="filter-bar">
-        <select><option>Amenities</option></select>
-        <label><input type="radio" name="type" checked> For Sale</label>
-        <label><input type="radio" name="type"> For Rent</label>
-      </div>
-    </div>
-
-    <section class="listing-grid">
-      {% for listing in listings %}
-      <div class="listing-card">
-        <div class="listing-image">
-          <img src="{{ listing.image.url }}" alt="Property image">
-          {% if listing.featured %}
-          <span class="badge">FEATURED</span>
-          {% endif %}
-        </div>
-        <div class="listing-info">
-          <h3>RM {{ listing.price }}</h3>
-          <p>{{ listing.location }}</p>
-          <p>{{ listing.size }}</p>
-          <p>{{ listing.description }}</p>
-          <button class="contact-btn">CONTACT SELLER</button>
-          <small>by {{ listing.agent }}</small>
-        </div>
-      </div>
-      {% endfor %}
-    </section>
-    
-  </main>-->
 {% endblock %}
