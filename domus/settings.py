@@ -156,6 +156,8 @@ CHANNEL_LAYERS = {
     },
 }
 
+PORT = os.environ.get('PORT', 8000)
+
 if os.environ.get('RAILWAY_ENVIRONMENT'):
     DEBUG = False
     ALLOWED_HOSTS = ['*.railway.app', 'localhost', '127.0.0.1']
