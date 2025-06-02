@@ -1,0 +1,72 @@
+{% extends "base2.html" %}
+{% block content %}
+{% load static %}
+<section class="about" id="about">
+    <div class="container">
+
+      <figure class="about-banner">
+        <img src="{% static 'images/about-banner-1.jpg' %}" alt="House interior">
+
+        <!--<img src="{% static 'images/about-banner-2.jpg' %}" alt="House interior" class="abs-img">-->
+      </figure>
+
+      <div class="about-content">
+
+        <p class="section-subtitle">About Us</p>
+
+        <h2 class="h2 section-title">Real Estate Made Easy With Domus</h2>
+
+        <p class="about-text">
+          We are more than just a transaction medium. 
+          We at Domus aims to provide the best experience during transaction for all party involves. 
+          This is possible due to our user friendly user interface and our commitment towards transaction transparency.
+        </p>
+
+      <!--  <ul class="about-list">
+
+          <li class="about-item">
+            <div class="about-item-icon">
+              <ion-icon name="home-outline"></ion-icon>
+            </div>
+
+            <p class="about-item-text">Smart Home Design</p>
+          </li>
+
+          <li class="about-item">
+            <div class="about-item-icon">
+              <ion-icon name="leaf-outline"></ion-icon>
+            </div>
+
+            <p class="about-item-text">Beautiful Scene Around</p>
+          </li>
+
+          <li class="about-item">
+            <div class="about-item-icon">
+              <ion-icon name="wine-outline"></ion-icon>
+            </div>
+
+            <p class="about-item-text">Exceptional Lifestyle</p>
+          </li>
+
+          <li class="about-item">
+            <div class="about-item-icon">
+              <ion-icon name="shield-checkmark-outline"></ion-icon>
+            </div>
+
+            <p class="about-item-text">Complete 24/7 Security</p>
+          </li>
+
+        </ul>-->
+
+        <p class="callout">
+          "Enimad minim veniam quis nostrud exercitation
+          llamco laboris. Lorem ipsum dolor sit amet"
+        </p>
+
+        <a href="{% url 'service' %}" class="btn">Our Services</a>
+
+      </div>
+
+    </div>
+  </section>
+  {% endblock %}

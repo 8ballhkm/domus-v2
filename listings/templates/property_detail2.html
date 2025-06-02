@@ -1,0 +1,46 @@
+{% extends 'base2.html' %}
+
+{% block content %}
+<section class="property-section">
+    <div class="property-container-detail">
+        <h1>{{ property.title }}</h1>
+
+        <div class="property-image-detail">
+            {% if image_urls %}
+                <img src="{{ image_urls.0 }}" alt="Property Image" class="property-image" onclick="openModal();">
+            {% else %}
+                <img src="/path/to/default/image.jpg" alt="Default Property Image" class="property-image">
+            {% endif %}
+        </div>
+
+        <div class="property-info">
+            <p><strong>Price:</strong> ${{ property.price }}</p>
+            <p><strong>Location:</strong> {{ property.location }}</p>
+            <p><strong>Size:</strong> {{ property.size }}</p>
+            <p><strong>Furnishing:</strong> {{ property.furnishing }}</p>
+            <p><strong>Condition:</strong> {{ property.condition }}</p>
+            <p><strong>Description:</strong> {{ property.description|linebreaksbr }}</p>
+        </div>
+          
+        {% if user.is_authenticated %}
+            <button onclick="startChat({{ property.owner.id }})" class="chat-btn">Chat with Owner</button>
+        {% endif %}
+
+        <a href="{% url 'listings2' %}" class="back-btn">← Back to Listings</a>
+    </div>
+
+    <div id="imageModal" class="modal">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <div class="modal-content">
+            <img id="modalImage" class="modal-image" src="{{ property.images.first.image.url }}" alt="Property Image">
+            <div class="modal-buttons">
+                <button id="prevBtn" class="modal-button" onclick="changeImage(-1)">&#10094; Prev</button>
+                <button id="nextBtn" class="modal-button" onclick="changeImage(1)">Next &#10095;</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+{{ image_urls|json_script:"imageUrls" }}
+
+{% endblock %}

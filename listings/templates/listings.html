@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="listing-section" id="listing-section">
+    <div id="searchFormContainer" style="display: none;">
+        <form method="get" action="{% url 'listings' %}">
+            <input type="text" name="q" placeholder="Search by title or description" value="{{ request.GET.q }}">
+
+            <select name="location">
+                <option value="">Select Location</option>
+                {% for state, label in properties.model.STATES %}
+                    <option value="{{ state }}" {% if state == request.GET.location %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+        
+            <input type="number" name="min_price" placeholder="Min Price" value="{{ request.GET.min_price }}">
+            <input type="number" name="max_price" placeholder="Max Price" value="{{ request.GET.max_price }}">
+        
+            <select name="property_type">
+                <option value="">Select Property Type</option>
+                <option value="House" {% if 'House' == request.GET.property_type %}selected{% endif %}>House</option>
+                <option value="Apartment" {% if 'Apartment' == request.GET.property_type %}selected{% endif %}>Apartment</option>
+                <option value="Commercial" {% if 'Commercial' == request.GET.property_type %}selected{% endif %}>Commercial</option>
+                <option value="Land" {% if 'Land' == request.GET.property_type %}selected{% endif %}>Land</option>
+            </select>
+        
+            <select name="size">
+                <option value="">Select Room Size</option>
+                <option value="Small" {% if 'Small' == request.GET.size %}selected{% endif %}>Small</option>
+                <option value="Medium" {% if 'Medium' == request.GET.size %}selected{% endif %}>Medium</option>
+                <option value="Large" {% if 'Large' == request.GET.size %}selected{% endif %}>Large</option>
+                <option value="Master" {% if 'Master' == request.GET.size %}selected{% endif %}>Master</option>
+            </select>
+        
+            <input type="number" name="room_count" placeholder="Room Count" value="{{ request.GET.room_count }}">
+
+            <select name="listing_type">
+                <option value="">Select Listing Type</option>
+                <option value="For Sale" {% if 'For Sale' == request.GET.listing_type %}selected{% endif %}>For Sale</option>
+                <option value="For Rent" {% if 'For Rent' == request.GET.listing_type %}selected{% endif %}>For Rent</option>
+                <option value="Auction" {% if 'Auction' == request.GET.listing_type %}selected{% endif %}>Auction</option>
+            </select>
+    
+            <select name="availability">
+                <option value="">Select Availability</option>
+                <option value="Immediate" {% if 'Immediate' == request.GET.availability %}selected{% endif %}>Immediate</option>
+                <option value="Coming Soon" {% if 'Coming Soon' == request.GET.availability %}selected{% endif %}>Coming Soon</option>
+            </select>
+    
+            <fieldset>
+                <legend>Property Features</legend>
+            
+                <button type="button" id="featureModalBtn" onclick="openFeatureModal()">Select Features</button>
+
+                <p>Click the button to choose features</p>
+            </fieldset>
+
+            <select name="condition">
+                <option value="">Select Condition</option>
+                <option value="New" {% if 'New' == request.GET.condition %}selected{% endif %}>New</option>
+                <option value="Renovated" {% if 'Renovated' == request.GET.condition %}selected{% endif %}>Renovated</option>
+                <option value="Pre-owned" {% if 'Pre-owned' == request.GET.condition %}selected{% endif %}>Pre-owned</option>
+            </select>
+    
+            <select name="furnishing">
+                <option value="">Select Furnishing</option>
+                <option value="Unfurnished" {% if 'Unfurnished' == request.GET.furnishing %}selected{% endif %}>Unfurnished</option>
+                <option value="Partially Furnished" {% if 'Partially Furnished' == request.GET.furnishing %}selected{% endif %}>Partially Furnished</option>
+                <option value="Fully Furnished" {% if 'Fully Furnished' == request.GET.furnishing %}selected{% endif %}>Fully Furnished</option>
+            </select>
+            <label for="featured">Featured:</label>
+            <input type="checkbox" name="featured" {% if request.GET.featured == 'on' %}checked{% endif %}>
+            
+            <button type="submit" class="search-submit">Apply Filters</button>
+        </form>
+    </div>
+
+    <div class="property-listing-container">
+        {% for property in properties %}
+            <div class="property-card">
+                {% if property.images.all %}
+                    <img src="{{ property.images.first.image.url }}" alt="Property Image" class="property-image">
+                {% else %}
+                    <img src="/path/to/default/image.jpg" alt="Default Property Image" class="property-image">
+                {% endif %}
+                <div class="property-details">
+                    <h2 class="property-title">{{ property.title }}</h2>
+                    <p class="property-location">{{ property.location }}</p>
+                    <p class="property-price">RM{{ property.price|floatformat:2 }}</p>
+                    <p class="property-description">{{ property.description|truncatewords:20 }}</p>
+                    {% if property.id %}
+                        <a href="{% url 'property_detail' property.id %}" class="view-details-button">View Details</a>
+                    {% else %}
+                        <span class="view-details-button disabled">No Details</span>
+                    {% endif %}
+                </div>
+            </div>
+        {% empty %}
+            <p>No properties available at the moment.</p>
+        {% endfor %}
+    </div>
+    <div class="pagination">
+        <span class="step-links">
+            {% if properties.has_next %}
+                <a href="?page={{ properties.next_page_number }}" class="pagination-link">next</a>
+                <a href="?page={{ properties.paginator.num_pages }}" class="pagination-link">last &raquo;</a>
+            {% endif %}
+            {% if properties.has_previous %}
+                <a href="?page=1" class="pagination-link">&laquo; first</a>
+                <a href="?page={{ properties.previous_page_number }}" class="pagination-link">previous</a>
+            {% endif %}
+
+            <span class="current">
+                Page {{ properties.number }} of {{ properties.paginator.num_pages }}.
+            </span>
+        </span>
+    </div>
+</section>
+
+<div id="featureModal" class="feature-modal modal" style="display: none;">
+    <div class="modal-content">
+        <span class="close-feature" onclick="closeFeatureModal()">&times;</span>
+        <h2>Select Property Features</h2>
+        <form id="modalFeatureForm" method="GET" action="{% url 'listings' %}">
+            {% for feature in all_features %}
+                <label>
+                    <input type="checkbox" name="features" value="{{ feature.id }}"  
+                        {% if feature.id|stringformat:"s" in selected_features %}checked{% endif %}>
+                    {{ feature.name }}
+                </label><br>
+            {% endfor %}
+            <input type="hidden" name="q" value="{{ request.GET.q }}">
+            <input type="hidden" name="location" value="{{ request.GET.location }}">
+            <input type="hidden" name="min_price" value="{{ request.GET.min_price }}">
+            <input type="hidden" name="max_price" value="{{ request.GET.max_price }}">
+            <input type="hidden" name="property_type" value="{{ request.GET.property_type }}">
+            <input type="hidden" name="size" value="{{ request.GET.size }}">
+            <input type="hidden" name="room_count" value="{{ request.GET.room_count }}">
+            <input type="hidden" name="listing_type" value="{{ request.GET.listing_type }}">
+            <input type="hidden" name="availability" value="{{ request.GET.availability }}">
+            <input type="hidden" name="condition" value="{{ request.GET.condition }}">
+            <input type="hidden" name="furnishing" value="{{ request.GET.furnishing }}">
+            {% if request.GET.featured == 'on' %}
+                <input type="hidden" name="featured" value="on">
+            {% endif %}
+            <button type="submit">Apply</button>
+        </form>
+    </div>
+</div>
+
+
+
+{% endblock %}

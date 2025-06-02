@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Domus - Real Estate Made Easy</title>
+
+  <!-- 
+    - favicon 
+    <link rel="shortcut icon" href="./favicon.svg" type="image/svg+xml">
+  -->
+ 
+
+  <!-- 
+    - custom css link
+    <link rel="stylesheet" href="./assets/css/style.css">
+  -->
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}?v=2">
+
+  <!-- 
+    - google font link
+  -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&family=Poppins:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+</head>
+
+<body>
+
+  <!-- 
+    - #HEADER
+  -->
+
+  <header class="header" data-header>
+
+    <div class="overlay" data-overlay></div>
+
+
+    <div class="header-bottom">
+      <div class="container">
+
+        <a href="{% url 'home' %}" class="logo">
+          <img src="{% static 'images/logo.png' %}" alt="logo">
+        </a>
+
+        <nav class="navbar" data-navbar>
+
+          <div class="navbar-top">
+
+            <a href="#" class="logo">
+              <img src="{% static 'images/logo.png' %}" alt="logo">
+            </a>
+
+            <button class="nav-close-btn" data-nav-close-btn aria-label="Close Menu">
+              <ion-icon name="close-outline"></ion-icon>
+            </button>
+
+          </div>
+
+          <div class="navbar-bottom">
+            <ul class="navbar-list">
+
+              <li>
+                <a href="{% url 'home' %}" class="navbar-link" data-nav-link>Home</a>
+              </li>
+
+              <li>
+                <a href="{% url 'aboutus' %}" class="navbar-link" data-nav-link>About</a>
+              </li>
+
+              <li>
+                <a href="{% url 'service' %}" class="navbar-link" data-nav-link>Service</a>
+              </li>
+
+              <li>
+                <a href="{% url 'listings' %}" class="navbar-link" data-nav-link>Property</a>
+              </li>
+
+            </ul>
+          </div>
+
+        </nav>
+
+        <div class="header-bottom-actions">
+          <a href="{% url 'listings' %}" class="header-bottom-actions-btn" onclick="handleSearchClick(event)">
+            <ion-icon name="search-outline"></ion-icon>
+            <span>Search</span>
+          </a>
+          <script>
+            function toggleSearch() {
+              console.log("Button clicked!");
+              const form = document.getElementById("searchFormContainer");
+              if (form) {
+                form.style.display = form.style.display === "none" ? "block" : "none";
+                form.scrollIntoView({ behavior: "smooth" });
+              } else {
+                console.log("Form not found!");
+              }
+            }
+          
+            function handleSearchClick(event) {
+              const onListingsPage = window.location.pathname === "{% url 'listings' %}";
+              
+              if (onListingsPage) {
+                event.preventDefault(); // Don't follow the link
+                toggleSearch();
+              }
+              // else: let the link redirect to the listings page
+            }
+          </script>
+
+          <div class="dropdown-container">
+            <button class="header-bottom-actions-btn" aria-label="Profile" onclick="toggleDropdown(event)">
+              <ion-icon name="person-outline"></ion-icon>
+              <span>Profile</span>
+            </button> 
+
+            <div id="profileDropdown" class="dropdown-menu">
+              <a href="{% url 'users:login' %}">Login</a>
+              <a href="{% url 'users:register' %}">Register</a>
+            </div>
+          </div>
+          
+          <script>
+            function toggleDropdown(event) {
+              event.stopPropagation();
+              const dropdown = document.getElementById("profileDropdown");
+              dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+            }
+          
+            document.addEventListener("click", function(event) {
+              const dropdown = document.getElementById("profileDropdown");
+              if (dropdown) dropdown.style.display = "none";
+            });
+          </script>
+        </div>
+
+      </div>
+    </div>
+
+  </header>
+
+
+
+
+
+  <main>
+    <article>     
+
+{% block content %}{% endblock %}
+
+   </article>
+  </main>
+
+<script>
+  window.currentUserId = {% if current_user_id %}{{ current_user_id }}{% else %}null{% endif %};
+</script>
+<script src="{% static 'js/script.js' %}"></script>
+
+
+
+  <!-- 
+    - #FOOTER
+  -->
+
+  <footer class="footer">
+
+    <div class="footer-top">
+      <div class="container">
+
+        <div class="footer-brand">
+
+          <a href="#" class="logo">
+            <img src="{% static 'images/logo.png' %}" alt="logo">
+          </a>
+
+          <p class="section-text">
+            Real estate made easy with DOMUS. 
+            We believe that real estate should be easy.
+            So, let us help you promote your property or 
+            find you a new home with ease.
+          </p>
+
+          <ul class="contact-list">
+
+            <li>
+              <a href="#" class="contact-link">
+                <ion-icon name="location-outline"></ion-icon>
+
+                <address>Cyberjaya, Selangor, Malaysia</address>
+              </a>
+            </li>
+
+            <li>
+              <a href="tel:+60-17-279-1008" class="contact-link">
+                <ion-icon name="call-outline"></ion-icon>
+
+                <span>+60-17-279-1008</span>
+              </a>
+            </li>
+
+            <li>
+              <a href="mailto:email" class="contact-link">
+                <ion-icon name="mail-outline"></ion-icon>
+
+                <span>Email</span>
+              </a>
+            </li>
+
+          </ul>
+
+          <ul class="social-list">
+
+            <li>
+              <a href="#" class="social-link">
+                <ion-icon name="logo-facebook"></ion-icon>
+              </a>
+            </li>
+
+            <li>
+              <a href="#" class="social-link">
+                <ion-icon name="logo-twitter"></ion-icon>
+              </a>
+            </li>
+
+            <li>
+              <a href="#" class="social-link">
+                <ion-icon name="logo-linkedin"></ion-icon>
+              </a>
+            </li>
+
+            <li>
+              <a href="#" class="social-link">
+                <ion-icon name="logo-youtube"></ion-icon>
+              </a>
+            </li>
+
+          </ul>
+
+        </div>
+
+        <div class="footer-link-box">
+
+          <ul class="footer-list">
+
+            <li>
+              <p class="footer-list-title">Company</p>
+            </li>
+
+            <li>
+              <a href="{% url 'aboutus' %}"class="footer-link">About</a>
+            </li>
+
+            <li>
+              <a href="{% url 'listings' %}" class="footer-link"class="footer-link">Properties</a>
+            </li>
+
+            <li>
+              <a href="#" class="footer-link"class="footer-link">Contact us</a>
+            </li>
+
+          </ul>
+
+          <ul class="footer-list">
+
+            <li>
+              <p class="footer-list-title"class="footer-link">Services</p>
+            </li>
+
+            <li>
+              <a href="{% url 'service' %}"class="footer-link">Services</a>
+            </li>
+
+            <li>
+              <a href="{% url 'users:login' %}" class="footer-link"class="footer-link">My account</a>
+            </li>
+
+            <li>
+              <a href="#" class="footer-link"class="footer-link">Terms & Conditions</a>
+            </li>
+
+          </ul>
+
+          <ul class="footer-list">
+
+            <li>
+              <p class="footer-list-title"class="footer-link">Customer Care</p>
+            </li>
+
+            <li>
+              <a href="{% url 'users:login' %}"class="footer-link">Login</a>
+            </li>
+
+            <li>
+              <a href="{% url 'users:login' %}" class="footer-link"class="footer-link">My account</a>
+            </li>
+
+            <li>
+              <a href="#" class="footer-link"class="footer-link">Contact us</a>
+            </li>
+
+          </ul>
+
+        </div>
+
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <div class="container">
+
+        <p class="copyright">
+          &copy; 2025 <a href="#">Domus</a>. All Rights Reserved
+        </p>
+
+      </div>
+    </div>
+
+  </footer>
+
+  {% block extra_js %}
+    <script src="{% static 'js/script.js' %}"></script>
+  {% endblock %}
+
+
+  <!-- 
+    - custom js link
+  -->
+
+  <!-- 
+    - ionicon link
+  -->
+  <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+<script src="{% static 'js/script.js' %}"></script>
+</body>
+
+</html>

@@ -1,0 +1,98 @@
+
+{% extends "base.html" %}
+{% block content %}
+{% load static %}
+      <section class="hero" id="home">
+        <div class="container">
+
+          <div class="hero-content">
+
+            <p class="hero-subtitle">
+              <ion-icon name="home"></ion-icon>
+
+              <span>Real Estate Agency</span>
+            </p>
+
+            <h2 class="h1 hero-title">Promote Your Property at DOMUS</h2>
+
+            <p class="hero-text">
+              Whether you want to sell or rent your property, we can help you.
+            </p>
+
+            <button class="btn" onclick="window.location.href='{% url 'users:login' %}'">Add Your Property</button>
+
+          </div>
+
+          <figure class="hero-banner">
+            <img src="{% static 'images/hero-banner.png' %}" alt="Modern house model" class="w-100">
+          </figure>
+
+        </div>
+      </section>
+
+
+      <section class="cta">
+        <div class="container">
+
+          <div class="cta-card">
+            <div class="card-content">
+              <h2 class="h2 card-title">Looking for a home?</h2>
+
+              <p class="card-text">We can help you find your dream place</p>
+            </div>
+
+            <button class="btn cta-btn" onclick="window.location.href='{% url 'listings' %}'">
+              <span>Explore Properties</span>
+
+              <ion-icon name="arrow-forward-outline"></ion-icon>
+            </button>
+          </div>
+
+        </div>
+      </section>
+
+    </article>
+<!-- <main class="dashboard">
+    <div class="filter-card">
+      <div class="filter-bar">
+        <select><option>State</option></select>
+        <select><option>Property Type</option></select>
+        <input type="text" placeholder="🔍 Search" class="search-input">
+        <button class="search-button">Search</button>
+      </div>
+      <div class="filter-bar">
+        <select><option>Area</option></select>
+        <select><option>Facilities</option></select>
+        <input type="text" value="Rm 1000" class="price-display" readonly>
+        <input type="range" min="0" max="5000" value="1000" class="price-slider">
+      </div>
+      <div class="filter-bar">
+        <select><option>Amenities</option></select>
+        <label><input type="radio" name="type" checked> For Sale</label>
+        <label><input type="radio" name="type"> For Rent</label>
+      </div>
+    </div>
+
+    <section class="listing-grid">
+      {% for listing in listings %}
+      <div class="listing-card">
+        <div class="listing-image">
+          <img src="{{ listing.image.url }}" alt="Property image">
+          {% if listing.featured %}
+          <span class="badge">FEATURED</span>
+          {% endif %}
+        </div>
+        <div class="listing-info">
+          <h3>RM {{ listing.price }}</h3>
+          <p>{{ listing.location }}</p>
+          <p>{{ listing.size }}</p>
+          <p>{{ listing.description }}</p>
+          <button class="contact-btn">CONTACT SELLER</button>
+          <small>by {{ listing.agent }}</small>
+        </div>
+      </div>
+      {% endfor %}
+    </section>
+    
+  </main>-->
+{% endblock %}
