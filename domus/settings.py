@@ -26,7 +26,12 @@ SECRET_KEY = 'django-insecure-^4@@&s7jy&%9rl-_6$=qgg-4os8%_i$-se)_)isxo1$t@wi*u9
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['domus.up.railway.app', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    'domus-v2-production.up.railway.app', 
+]
+
 
 
 # Application definition
