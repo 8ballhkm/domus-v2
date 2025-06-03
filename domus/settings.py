@@ -164,7 +164,7 @@ PORT = os.environ.get('PORT', 8000)
 
 if os.environ.get('RAILWAY_ENVIRONMENT'):
     DEBUG = False
-    ALLOWED_HOSTS = ['*.railway.app', 'localhost', '127.0.0.1']
+    ALLOWED_HOSTS = ['*.railway.app', 'localhost', '127.0.0.1', 'domus-v2-production.up.railway.app']
     
     SECRET_KEY = os.environ.get('SECRET_KEY', 'your-secret-key')  # Use a secure secret key from environment variables
     
