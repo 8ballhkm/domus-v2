@@ -162,26 +162,17 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Google Cloud Storage settings
-GS_BUCKET_NAME = 'domus-storage-bucket'  # Replace with your GCS bucket name
-GS_PROJECT_ID = 'domus-461822'  # Replace with your Google Cloud project ID
-GS_CREDENTIALS = 'C:/MMU/fyp/domus-461822-9152fd916399.json'
-  # Replace with the path to your downloaded JSON credentials file
-
-# Use GCS for file storage
-DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
-
-# Optional: Configure static files to be served from GCS (if needed)
-STATICFILES_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
-
 # Media files (uploads)
-MEDIA_URL = 'https://storage.googleapis.com/{}/'.format(GS_BUCKET_NAME)
-MEDIA_ROOT = '/'
+# Change MEDIA_ROOT to point to the volume mount point
+MEDIA_ROOT = '/mnt/storage/images'  # Update this to your mounted volume path
 
-# You may also set the cache control settings for your files
-GS_OBJECT_PARAMETERS = {
-    'CacheControl': 'public, max-age=86400',
-}
+# MEDIA_URL can remain the same or use a local URL if you serve media files via Django
+MEDIA_URL = '/media/'
+
+# Optional: Configure static files to be served from Railway Volume
+# If you want to serve static files from the volume too (adjust if necessary)
+STATIC_URL = '/static/'
+
 
 
 AUTH_USER_MODEL = 'users.CustomUser'
