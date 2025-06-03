@@ -173,7 +173,8 @@ MEDIA_URL = '/media/'
 # If you want to serve static files from the volume too (adjust if necessary)
 STATIC_URL = '/static/'
 
-
+PROPERTY_IMAGES_DIR = os.path.join(MEDIA_ROOT, 'property_images')
+PROFILE_PICTURES_DIR = os.path.join(MEDIA_ROOT, 'profile_pictures')
 
 AUTH_USER_MODEL = 'users.CustomUser'
 
