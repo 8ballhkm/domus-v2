@@ -168,11 +168,12 @@ if os.environ.get('RAILWAY_ENVIRONMENT'):
     
     SECRET_KEY = os.environ.get('SECRET_KEY', 'your-secret-key')  # Use a secure secret key from environment variables
     
-    # Database configuration for Railway PostgreSQL
     if 'DATABASE_URL' in os.environ:
         DATABASES = {
             'default': dj_database_url.config(
-                default='postgresql://postgres:TYycQlUarosmCaGmaEwavkkadfEphrvM@hopper.proxy.rlwy.net:23661/railway'
+                default=os.environ.get('DATABASE_URL'),
+                conn_max_age=600,
+                conn_health_checks=True,
             )
         }
 
@@ -187,3 +188,9 @@ if os.environ.get('RAILWAY_ENVIRONMENT'):
     'https://domus-v2-production.up.railway.app',  # Your Railway domain
     'http://domus-v2-production.up.railway.app',  # HTTP if applicable
     ]
+
+    SECURE_SSL_REDIRECT = True
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    SECURE_HSTS_SECONDS = 31536000
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
