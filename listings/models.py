@@ -124,14 +124,13 @@ class ListingImage(models.Model):
 
     def get_image_hash(self):
         try:
-            image_path = self.image.path  # Get the image path
-            print(f"Trying to open image at path: {image_path}")  # Log the path for debugging
-            
-            image = Image.open(image_path)  # Open the image
-            hash = imagehash.average_hash(image)  # Generate the hash using average hashing
-            return str(hash)  # Return the hash as a string
-        except FileNotFoundError:
-            print(f"File not found: {image_path}")  # Log the file not found error
+            # Get the image path for local storage or URL for GCS
+            image_url = self.image.url
+            image = Image.open(image_url)  # Open image from URL in GCS
+            hash = imagehash.average_hash(image)  # Generate hash
+            return str(hash)
+        except Exception as e:
+            print(f"Error: {e}")
             return None
 
     def __str__(self):

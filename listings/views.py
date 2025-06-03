@@ -42,26 +42,27 @@ def add_listing(request):
             listing.owner = request.user  # Assign the logged-in user as the owner
             listing.save()
 
-            # Handle multiple image uploads manually (get all files from request.FILES)
+            # Handle multiple image uploads manually
             if 'image_files' in request.FILES:
-                for image in request.FILES.getlist('image_files'):  # Get a list of uploaded files
-                    uploaded_image_hash = generate_image_hash(image)  # Generate the hash for the uploaded image
+                for image in request.FILES.getlist('image_files'):  # Get list of uploaded files
+                    uploaded_image_hash = generate_image_hash(image)  # Generate image hash
 
-                    # Check for duplicates before saving
+                    # Check for duplicates
                     if check_image_similarity(uploaded_image_hash):
-                        messages.error(request, "One of the uploaded images already exists in the system!")
-                        return redirect('add_listing')  # Redirect back to add listing page
+                        messages.error(request, "One of the uploaded images already exists!")
+                        return redirect('add_listing')
 
-                    # Save the new image if no duplicate is found
+                    # Save image to ListingImage model
                     listing_image = ListingImage(image=image, listing=listing, image_hash=uploaded_image_hash)
-                    listing_image.save()  # Save only after checking for duplicates
+                    listing_image.save()
 
-                listing.images.add(*ListingImage.objects.filter(listing=listing))  # Link the images to the listing
-            
+                # Link images to the listing
+                listing.images.add(*ListingImage.objects.filter(listing=listing))
+
             selected_features = form.cleaned_data['features']  # Get selected features
             listing.features.set(selected_features)
 
-            return redirect('home2')  # Redirect to your desired page after saving
+            return redirect('home2')  # Redirect after saving
     else:
         form = ListingForm()
 
