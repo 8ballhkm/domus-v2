@@ -165,7 +165,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Google Cloud Storage settings
 GS_BUCKET_NAME = 'domus-storage-bucket'  # Replace with your GCS bucket name
 GS_PROJECT_ID = 'domus-461822'  # Replace with your Google Cloud project ID
-GS_CREDENTIALS = 'C:\MMU\fyp\domus-461822-9152fd916399.json'  # Replace with the path to your downloaded JSON credentials file
+GS_CREDENTIALS = 'C:/MMU/fyp/domus-461822-9152fd916399.json'
+  # Replace with the path to your downloaded JSON credentials file
 
 # Use GCS for file storage
 DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
