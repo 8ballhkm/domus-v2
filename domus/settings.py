@@ -80,13 +80,38 @@ ASGI_APPLICATION = 'domus.asgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+if 'DATABASE_URL' in os.environ:
+    # Use PostgreSQL (Railway or local with DATABASE_URL set)
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=os.environ.get('DATABASE_URL'),
+            conn_max_age=600,
+            conn_health_checks=True,
+        )
     }
-}
+else:
+    # Use SQLite for local development
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+
+# Railway-specific settings
+if os.environ.get('RAILWAY_ENVIRONMENT'):
+    DEBUG = False
+    ALLOWED_HOSTS = ['*.railway.app', 'localhost', '127.0.0.1', 'domus-v2-production.up.railway.app']
+    SECRET_KEY = os.environ.get('SECRET_KEY', 'your-secret-key')
+    
+    # Static files configuration for Railway
+    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+    CSRF_TRUSTED_ORIGINS = [
+        'https://domus-v2-production.up.railway.app',
+        'http://domus-v2-production.up.railway.app',
+    ]
 
 
 # Password validation
@@ -162,29 +187,4 @@ CHANNEL_LAYERS = {
 
 PORT = os.environ.get('PORT', 8000)
 
-if os.environ.get('RAILWAY_ENVIRONMENT'):
-    DEBUG = False
-    ALLOWED_HOSTS = ['*.railway.app', 'localhost', '127.0.0.1', 'domus-v2-production.up.railway.app']
-    
-    SECRET_KEY = os.environ.get('SECRET_KEY', 'your-secret-key')  # Use a secure secret key from environment variables
-    
-    if 'DATABASE_URL' in os.environ:
-        DATABASES = {
-            'default': dj_database_url.config(
-                default=os.environ.get('DATABASE_URL'),
-                conn_max_age=600,
-                conn_health_checks=True,
-            )
-        }
 
-
-
-    
-    # Static files configuration for Railway
-    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
-    CSRF_TRUSTED_ORIGINS = [
-    'https://domus-v2-production.up.railway.app',  # Your Railway domain
-    'http://domus-v2-production.up.railway.app',  # HTTP if applicable
-    ]
