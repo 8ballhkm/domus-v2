@@ -343,4 +343,3 @@ if os.environ.get('RAILWAY_ENVIRONMENT'):
     # Static files configuration for Railway
     STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
->>>>>>> 21d145505579cd992ddb0b7e8844fd2c490a66f6
