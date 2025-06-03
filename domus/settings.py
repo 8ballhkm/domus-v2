@@ -171,8 +171,11 @@ if os.environ.get('RAILWAY_ENVIRONMENT'):
     # Database configuration for Railway PostgreSQL
     if 'DATABASE_URL' in os.environ:
         DATABASES = {
-            'default': dj_database_url.parse(os.environ.get('DATABASE_URL'))
+            'default': dj_database_url.config(
+                default='postgresql://postgres:TYycQlUarosmCaGmaEwavkkadfEphrvM@hopper.proxy.rlwy.net:23661/railway'
+            )
         }
+
 
 
     
