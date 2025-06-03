@@ -179,3 +179,8 @@ if os.environ.get('RAILWAY_ENVIRONMENT'):
     # Static files configuration for Railway
     STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+    CSRF_TRUSTED_ORIGINS = [
+    'https://domus-v2-production.up.railway.app',  # Your Railway domain
+    'http://domus-v2-production.up.railway.app',  # HTTP if applicable
+    ]
