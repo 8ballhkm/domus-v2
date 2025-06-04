@@ -165,7 +165,12 @@ async function openChatRoom(partnerId, partnerUsername) {
     console.error('Failed to load chat history:', error);
   }
 
-  chatSocket = new WebSocket(`ws://${window.location.host}/ws/chat/${currentRoomName}/`);
+   // Determine the WebSocket protocol based on the current page protocol
+  const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+  const wsUrl = `${protocol}//${window.location.host}/ws/chat/${currentRoomName}/`;
+  
+  console.log('Connecting to WebSocket:', wsUrl);
+  chatSocket = new WebSocket(wsUrl);
 
   chatSocket.onmessage = function(e) {
     const data = JSON.parse(e.data);
