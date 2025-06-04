@@ -42,4 +42,7 @@ urlpatterns = [
     path('api/chat/history/<int:partner_id>/', views.chat_history_api, name='chat_history_api'),
     path('edit_property/<uuid:id>/', edit_property, name='edit_property'),
     path('delete_property/<uuid:id>/', delete_property, name='delete_property'),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+] 
+if settings.DEBUG or True:  # Always serve media files
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -26,7 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-^4@@&s7jy&%9rl-_6$=qgg-4os8%_i$-se)_)isxo1$t@wi*u9'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -44,7 +44,6 @@ INSTALLED_APPS = [
     'users',
     'channels',
     'chat',
-    'storages',
 ]
 
 MIDDLEWARE = [
@@ -55,7 +54,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-     'whitenoise.middleware.WhiteNoiseMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'domus.urls'
@@ -108,6 +107,11 @@ if os.environ.get('RAILWAY_ENVIRONMENT'):
     # Static files configuration for Railway
     STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+    MEDIA_ROOT = '/mnt/storage/images'  # Update this to your mounted volume path
+
+    # MEDIA_URL can remain the same or use a local URL if you serve media files via Django
+    MEDIA_URL = '/media/'
 
     CSRF_TRUSTED_ORIGINS = [
         'https://domus-v2-production.up.railway.app',
@@ -164,7 +168,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Media files (uploads)
 # Change MEDIA_ROOT to point to the volume mount point
-MEDIA_ROOT = '/mnt/storage/images'  # Update this to your mounted volume path
+MEDIA_ROOT = BASE_DIR / 'media' # Update this to your mounted volume path
 
 # MEDIA_URL can remain the same or use a local URL if you serve media files via Django
 MEDIA_URL = '/media/'
