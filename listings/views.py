@@ -238,7 +238,7 @@ def edit_property(request, id):
 
                     listing_image = ListingImage(image=image, listing=listing, image_hash=uploaded_image_hash)
                     listing_image.save()
-
+                    print(f"Image saved successfully: {listing_image.image.url}")
                 listing.images.add(*ListingImage.objects.filter(listing=listing))
 
             # Handle image deletions (if any)
