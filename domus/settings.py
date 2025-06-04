@@ -117,7 +117,9 @@ if os.environ.get('RAILWAY_ENVIRONMENT'):
         'https://domus-v2-production.up.railway.app',
         'http://domus-v2-production.up.railway.app',
     ]
-
+else:
+    MEDIA_ROOT = BASE_DIR / 'media' 
+    MEDIA_URL = '/media/'
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -168,10 +170,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Media files (uploads)
 # Change MEDIA_ROOT to point to the volume mount point
-MEDIA_ROOT = BASE_DIR / 'media' # Update this to your mounted volume path
-
-# MEDIA_URL can remain the same or use a local URL if you serve media files via Django
-MEDIA_URL = '/media/'
 
 # Optional: Configure static files to be served from Railway Volume
 # If you want to serve static files from the volume too (adjust if necessary)
