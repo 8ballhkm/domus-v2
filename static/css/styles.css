@@ -1550,90 +1550,6 @@
       margin-bottom: 40px;
     }
   
-  
-  /**
-  * LOGIN
-  */
-    .login{
-      background: var(--ivory-white);
-      padding-block: var(--section-padding);
-    }
-    .login-container {
-      width: 600px;
-      margin: 100px auto;
-      padding: 30px;
-      background-color: var(--gold);
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      font-family: Arial, sans-serif;
-  }
-  
-  .login-container h2 {
-      text-align: center;
-      margin-bottom: 20px;
-  }
-  
-  .login-container label {
-      display: block;
-      margin-bottom: 5px;
-      font-weight: bold;
-  }
-  
-  .login-container input[type="text"],
-  .login-container input[type="email"],
-  .login-container input[type="password"] {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 15px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-  }
-  
-  .login-container input[type="submit"] {
-      width: 100%;
-      padding: 10px;
-      background-color: #4CAF50;
-      border: none;
-      border-radius: 5px;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-  }
-  
-  .login-container input[type="submit"]:hover {
-      background-color: #45a049;
-  }
-  
-  .login-container p {
-      text-align: center;
-  }
-  
-  .login-container a {
-      color: #6a1b9a;
-      text-decoration: none;
-  }
-  
-  .login-container a:hover {
-      text-decoration: underline;
-  }
-
-  .login-container .btn-login{
-    background-color: var(--space-cadet);
-    color: #D4AF37;
-    padding: 5px 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: bold;
-  }
-
-  .login-container .btn-wrapper {
-    display: flex;
-    justify-content: center;
-    margin-top: 5px;
-    margin-bottom: 10px;
-  }
-  
     /**
      * CTA
      */
@@ -2729,4 +2645,262 @@ label {
   box-shadow: 0 4px 8px rgba(0,0,0,0.2);
   background: var(--gold);
   color: var(--space-cadet);
+}
+
+
+.login{
+  width: 100%;
+  margin: 0 auto;
+  background: var(--ivory-white);
+  padding-block: var(--section-padding);
+}
+
+.login-container {
+  background: var(--gold);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(27, 38, 59, 0.3);
+  padding: 40px 30px;
+  width: 100%;
+  border: 2px solid var(--space-cadet);
+  max-width: 400px;
+  margin: auto;
+}
+
+.login-container h2 {
+  text-align: center;
+  margin-bottom: 30px;
+  color: var(--space-cadet);
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.login-container form p {
+  margin-bottom: 20px;
+}
+
+.login-container label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--space-cadet);
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.login-container input[type="text"],
+.login-container input[type="email"],
+.login-container input[type="password"] {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #e1e5e9;
+  border-radius: 10px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.login-container input[type="text"]:focus,
+.login-container input[type="email"]:focus,
+.login-container input[type="password"]:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  transform: translateY(-2px);
+}
+
+.btn-wrapper {
+  margin: 30px 0 20px 0;
+}
+
+.btn-login {
+  width: 100%;
+  padding: 14px;
+  background: var(--space-cadet);
+  color: var(--gold);
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.btn-login:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  border-radius: 10px;
+}
+
+.btn-login:active {
+  transform: translateY(0);
+}
+
+.login-container p {
+  text-align: center;
+  color: #666;
+  font-size: 0.95rem;
+}
+
+.login-container p a {
+  color: #667eea;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.login-container p a:hover {
+  color: #764ba2;
+  text-decoration: underline;
+}
+
+/* Error messages styling */
+.errorlist {
+  list-style: none;
+  margin: 8px 0 0 0;
+  padding: 0;
+}
+
+.errorlist li {
+  color: #e74c3c;
+  font-size: 0.9rem;
+  margin-bottom: 5px;
+  padding: 8px 12px;
+  background: rgba(231, 76, 60, 0.1);
+  border-radius: 6px;
+  border-left: 3px solid #e74c3c;
+}
+
+/* Responsive Design */
+
+/* Large tablets and small desktops */
+@media (max-width: 1024px) {
+  .login-container {
+    max-width: 380px;
+    padding: 35px 25px;
+  }
+
+  .login-container h2 {
+    font-size: 1.8rem;
+  }
+}
+
+/* Tablets */
+@media (max-width: 768px) {
+  .login-container {
+    max-width: 100%;
+    padding: 30px 20px;
+  }
+
+  .login-container h2 {
+    font-size: 1.7rem;
+    margin-bottom: 25px;
+  }
+
+  .login-container input[type="text"],
+  .login-container input[type="email"],
+  .login-container input[type="password"] {
+    padding: 14px 16px;
+    font-size: 1rem;
+  }
+
+  .btn-login {
+    padding: 16px;
+    font-size: 1.1rem;
+  }
+}
+
+/* Large mobile phones */
+@media (max-width: 480px) {
+  .login-container {
+    padding: 25px 15px;
+    border-radius: 15px;
+  }
+
+  .login-container h2 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+  }
+
+  .login-container input[type="text"],
+  .login-container input[type="email"],
+  .login-container input[type="password"] {
+    padding: 12px 14px;
+    font-size: 0.95rem;
+  }
+
+  .btn-login {
+    padding: 14px;
+    font-size: 1rem;
+  }
+
+  .login-container p {
+    font-size: 0.9rem;
+  }
+}
+
+/* Small mobile phones */
+@media (max-width: 360px) {
+  .login-container {
+    padding: 20px 12px;
+    border-radius: 12px;
+  }
+
+  .login-container h2 {
+    font-size: 1.4rem;
+  }
+
+  .login-container input[type="text"],
+  .login-container input[type="email"],
+  .login-container input[type="password"] {
+    padding: 10px 12px;
+    font-size: 0.9rem;
+  }
+
+  .btn-login {
+    padding: 12px;
+    font-size: 0.95rem;
+    letter-spacing: 0.5px;
+  }
+}
+
+/* Landscape orientation on mobile */
+@media (max-height: 600px) and (orientation: landscape) {
+
+  .login-container {
+    padding: 20px 25px;
+    max-width: 380px;
+  }
+
+  .login-container h2 {
+    font-size: 1.4rem;
+    margin-bottom: 15px;
+  }
+
+  .login-container form p {
+    margin-bottom: 15px;
+  }
+
+  .btn-wrapper {
+    margin: 20px 0 15px 0;
+  }
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .login-container {
+    background: white;
+    border: 2px solid #333;
+  }
+
+  .login-container input[type="text"],
+  .login-container input[type="email"],
+  .login-container input[type="password"] {
+    border: 2px solid #333;
+  }
 }
