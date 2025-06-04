@@ -1,5 +1,3 @@
-
-
 """
 Django settings for domus project.
 
@@ -30,6 +28,12 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
+# CSRF Settings - Add trusted origins for your Railway deployment
+CSRF_TRUSTED_ORIGINS = [
+    'https://domus-v2-production.up.railway.app',
+    'http://localhost:8000',
+    'http://127.0.0.1:8000',
+]
 
 # Application definition
 
@@ -191,6 +195,3 @@ CHANNEL_LAYERS = {
 }
 
 PORT = os.environ.get('PORT', 8000)
-
-
-
