@@ -99,27 +99,16 @@ else:
     }
 
 # Railway-specific settings
-if os.environ.get('RAILWAY_ENVIRONMENT'):
-    DEBUG = False
-    ALLOWED_HOSTS = ['*.railway.app', 'localhost', '127.0.0.1', 'domus-v2-production.up.railway.app']
-    SECRET_KEY = os.environ.get('SECRET_KEY', 'your-secret-key')
-    
-    # Static files configuration for Railway
-    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
-    MEDIA_ROOT = '/mnt/storage/images'  # Update this to your mounted volume path
-
-    # MEDIA_URL can remain the same or use a local URL if you serve media files via Django
+if os.path.exists('/var/lib/containers/railwayapp'):
+    # Production settings for Railway - use the volume mount
+    MEDIA_ROOT = '/mnt/storage/images'
     MEDIA_URL = '/media/'
-
-    CSRF_TRUSTED_ORIGINS = [
-        'https://domus-v2-production.up.railway.app',
-        'http://domus-v2-production.up.railway.app',
-    ]
+    print(f"Railway detected - MEDIA_ROOT set to: {MEDIA_ROOT}")
 else:
-    MEDIA_ROOT = BASE_DIR / 'media' 
+    # Local development settings
+    MEDIA_ROOT = BASE_DIR / 'media'
     MEDIA_URL = '/media/'
+    print(f"Local development - MEDIA_ROOT set to: {MEDIA_ROOT}")
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
