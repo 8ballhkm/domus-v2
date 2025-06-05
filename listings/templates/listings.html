@@ -9,7 +9,7 @@
             <div class="filter-tags" id="filterTags"></div>
         </div>
 
-        <form class="search-form" method="get" action="/listings2/">
+        <form class="search-form" method="get" action="/listings/">
             <!-- Search Query -->
             <div class="form-group">
                 <label for="search-query">Search Properties</label>
@@ -115,22 +115,21 @@
             </div>
 
             <!-- Featured Checkbox -->
-            <div class="form-group">
+            <!-- <div class="form-group">
                 <div class="checkbox-group">
                     <input type="checkbox" id="featured" name="featured" class="checkbox-input">
                     <label for="featured" class="checkbox-label">Featured Properties Only</label>
                 </div>
-            </div>
+            </div> -->
 
             <!-- Property Features -->
-            <div class="features-section">
                 <div class="features-legend">Property Features</div>
                 <button type="button" class="features-button" onclick="openFeatureModal()">
                     Select Features
                 </button>
-                <p class="features-description">Click to choose specific property features</p>
                 <div id="selectedFeaturesDisplay" class="filter-tags" style="margin-top: 12px;"></div>
-            </div>
+
+            <input type="hidden" name="sort" value="{{ request.GET.sort }}">
 
             <!-- Submit Buttons -->
             <div class="submit-section">
@@ -138,6 +137,34 @@
                 <button type="button" class="clear-filters" onclick="clearAllFilters()">Clear All</button>
             </div>
         </form>
+
+
+        <div class="sorting-container">
+            <div class="sort-group">
+                <label class="sort-label">Sort by:</label>
+                <select class="sort-select" id="sortSelect" onchange="applySorting()">
+                    <option value="">Default</option>
+                    <option value="price_low" {% if current_sort == 'price_low' %}selected{% endif %}>Price: Low to High</option>
+                    <option value="price_high" {% if current_sort == 'price_high' %}selected{% endif %}>Price: High to Low</option>
+                    <option value="newest" {% if current_sort == 'newest' %}selected{% endif %}>Newest First</option>
+                    <option value="oldest" {% if current_sort == 'oldest' %}selected{% endif %}>Oldest First</option>
+                    <option value="title_az" {% if current_sort == 'title_az' %}selected{% endif %}>Title: A to Z</option>
+                    <option value="title_za" {% if current_sort == 'title_za' %}selected{% endif %}>Title: Z to A</option>
+                </select>
+            </div>
+        
+            <div class="sort-group">
+                <span class="sort-label">Quick Sort:</span>
+                <div class="sort-buttons">
+                    <a href="#" class="sort-btn {% if current_sort == 'price_low' %}active{% endif %}" onclick="quickSort('price_low')">💰 Price ↑</a>
+                    <a href="#" class="sort-btn {% if current_sort == 'price_high' %}active{% endif %}" onclick="quickSort('price_high')">💰 Price ↓</a>
+                    <a href="#" class="sort-btn {% if current_sort == 'newest' %}active{% endif %}" onclick="quickSort('newest')">📅 Newest</a>
+                    <a href="#" class="sort-btn {% if current_sort == 'oldest' %}active{% endif %}" onclick="quickSort('oldest')">📅 Oldest</a>
+                </div>
+            </div>
+
+            <a href="#" class="clear-sort" onclick="clearSort()">Clear Sort</a>
+        </div>
     </div>
 
     <!-- Feature Selection Modal -->
@@ -148,7 +175,7 @@
                 <span class="close-modal" onclick="closeFeatureModal()">&times;</span>
             </div>
             <div class="modal-body">
-                <form id="modalFeatureForm" method="GET" action="{% url 'listings2' %}">
+                <form id="modalFeatureForm" method="GET" action="{% url 'listings' %}">
                     <!-- Features populated from database -->
                     {% for feature in all_features %}
                         <label class="feature-option">
@@ -206,18 +233,19 @@
     </div>
     <div class="pagination">
         <span class="step-links">
-            {% if properties.has_next %}
-                <a href="?page={{ properties.next_page_number }}" class="pagination-link">next</a>
-                <a href="?page={{ properties.paginator.num_pages }}" class="pagination-link">last &raquo;</a>
-            {% endif %}
             {% if properties.has_previous %}
-                <a href="?page=1" class="pagination-link">&laquo; first</a>
-                <a href="?page={{ properties.previous_page_number }}" class="pagination-link">previous</a>
+                <a href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page=1" class="pagination-link">&laquo; first</a>
+                <a href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ properties.previous_page_number }}" class="pagination-link">previous</a>
             {% endif %}
 
             <span class="current">
                 Page {{ properties.number }} of {{ properties.paginator.num_pages }}.
             </span>
+
+            {% if properties.has_next %}
+                <a href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ properties.next_page_number }}" class="pagination-link">next</a>
+                <a href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ properties.paginator.num_pages }}" class="pagination-link">last &raquo;</a>
+            {% endif %}
         </span>
     </div>
 </section>
@@ -253,6 +281,286 @@
     </div>
 </div>
 
+<script>
+    // Global variables
+    let selectedFeatures = [];
 
+    // Initialize form
+    document.addEventListener('DOMContentLoaded', function () {
+        updateActiveFilters();
+        setupFormChangeHandlers();
+    });
+
+    // Feature Modal Functions
+    function openFeatureModal() {
+        const modal = document.getElementById('featureModal');
+        modal.classList.add('show');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeFeatureModal() {
+        const modal = document.getElementById('featureModal');
+        modal.classList.remove('show');
+        document.body.style.overflow = 'auto';
+    }
+
+    function applyFeatures() {
+        const checkboxes = document.querySelectorAll('#modalFeatureForm input[type="checkbox"]:checked');
+        selectedFeatures = [];
+
+        checkboxes.forEach(checkbox => {
+            selectedFeatures.push({
+                id: checkbox.value,
+                name: checkbox.nextElementSibling.textContent
+            });
+        });
+
+        updateSelectedFeaturesDisplay();
+        closeFeatureModal();
+    }
+
+    function updateSelectedFeaturesDisplay() {
+        const display = document.getElementById('selectedFeaturesDisplay');
+        display.innerHTML = '';
+
+        selectedFeatures.forEach(feature => {
+            const tag = document.createElement('div');
+            tag.className = 'filter-tag';
+            tag.innerHTML = `
+                    ${feature.name}
+                    <span class="remove" onclick="removeFeature('${feature.id}')">&times;</span>
+                `;
+            display.appendChild(tag);
+        });
+    }
+
+    function removeFeature(featureId) {
+        selectedFeatures = selectedFeatures.filter(f => f.id !== featureId);
+
+        // Uncheck the corresponding checkbox
+        const checkbox = document.querySelector(`#modalFeatureForm input[value="${featureId}"]`);
+        if (checkbox) checkbox.checked = false;
+
+        updateSelectedFeaturesDisplay();
+    }
+
+    // Form Management Functions
+    function clearAllFilters() {
+        const form = document.querySelector('.search-form');
+        form.reset();
+        selectedFeatures = [];
+        updateSelectedFeaturesDisplay();
+        updateActiveFilters();
+
+        // Clear all checkboxes in modal
+        document.querySelectorAll('#modalFeatureForm input[type="checkbox"]').forEach(cb => {
+            cb.checked = false;
+        });
+    }
+
+    function updateActiveFilters() {
+        const activeFiltersDiv = document.getElementById('activeFilters');
+        const filterTagsDiv = document.getElementById('filterTags');
+        const form = document.querySelector('.search-form');
+        const formData = new FormData(form);
+
+        let hasActiveFilters = false;
+        filterTagsDiv.innerHTML = '';
+
+        // Check all form inputs for active values
+        for (let [key, value] of formData.entries()) {
+            if (value && value.trim() !== '') {
+                hasActiveFilters = true;
+                const tag = createFilterTag(key, value);
+                if (tag) filterTagsDiv.appendChild(tag);
+            }
+        }
+
+        // Add selected features
+        selectedFeatures.forEach(feature => {
+            hasActiveFilters = true;
+            const tag = createFilterTag('feature', feature.name);
+            if (tag) filterTagsDiv.appendChild(tag);
+        });
+
+        activeFiltersDiv.style.display = hasActiveFilters ? 'block' : 'none';
+    }
+
+    function createFilterTag(key, value) {
+        const friendlyNames = {
+            'q': 'Search',
+            'location': 'Location',
+            'min_price': 'Min Price',
+            'max_price': 'Max Price',
+            'property_type': 'Type',
+            'size': 'Size',
+            'room_count': 'Rooms',
+            'listing_type': 'Listing',
+            'availability': 'Available',
+            'condition': 'Condition',
+            'furnishing': 'Furnishing',
+            'featured': 'Featured',
+            'feature': 'Feature'
+        };
+
+        const friendlyName = friendlyNames[key] || key;
+        const displayValue = key === 'featured' ? 'Yes' : value;
+
+        const tag = document.createElement('div');
+        tag.className = 'filter-tag';
+        tag.innerHTML = `
+                ${friendlyName}: ${displayValue}
+                <span class="remove" onclick="removeFilter('${key}', '${value}')">&times;</span>
+            `;
+        return tag;
+    }
+
+    function removeFilter(key, value) {
+        const form = document.querySelector('.search-form');
+        const element = form.querySelector(`[name="${key}"]`);
+
+        if (element) {
+            if (element.type === 'checkbox') {
+                element.checked = false;
+            } else {
+                element.value = '';
+            }
+        }
+
+        if (key === 'feature') {
+            removeFeature(selectedFeatures.find(f => f.name === value)?.id);
+        }
+
+        updateActiveFilters();
+    }
+
+    function setupFormChangeHandlers() {
+        const form = document.querySelector('.search-form');
+        const inputs = form.querySelectorAll('input, select');
+
+        inputs.forEach(input => {
+            input.addEventListener('change', updateActiveFilters);
+            input.addEventListener('input', updateActiveFilters);
+        });
+    }
+
+    // Modal close on outside click
+    window.addEventListener('click', function (event) {
+        const modal = document.getElementById('featureModal');
+        if (event.target === modal) {
+            closeFeatureModal();
+        }
+    });
+
+    // Feature option click handling
+    document.addEventListener('click', function (event) {
+        if (event.target.classList.contains('feature-option') ||
+            event.target.parentElement.classList.contains('feature-option')) {
+
+            const label = event.target.classList.contains('feature-option') ?
+                event.target : event.target.parentElement;
+            const checkbox = label.querySelector('input[type="checkbox"]');
+
+            if (event.target !== checkbox) {
+                checkbox.checked = !checkbox.checked;
+            }
+
+            label.classList.toggle('selected', checkbox.checked);
+        }
+    });
+
+    // Initialize feature option states
+    document.querySelectorAll('.feature-option input[type="checkbox"]').forEach(checkbox => {
+        checkbox.addEventListener('change', function () {
+            this.closest('.feature-option').classList.toggle('selected', this.checked);
+        });
+    });
+
+
+    function applySorting() {
+        const sortValue = document.getElementById('sortSelect').value;
+        updateURLWithSort(sortValue);
+    }
+
+    function quickSort(sortType) {
+        document.getElementById('sortSelect').value = sortType;
+        updateURLWithSort(sortType);
+    }
+
+    function clearSort() {
+        document.getElementById('sortSelect').value = '';
+        updateURLWithSort('');
+    }
+
+    function updateURLWithSort(sortValue) {
+        const url = new URL(window.location);
+        
+        if (sortValue) {
+            url.searchParams.set('sort', sortValue);
+        } else {
+            url.searchParams.delete('sort');
+        }
+        
+        // Navigate to the new URL - this will trigger Django to re-render with sorting
+        window.location.href = url.toString();
+    }
+
+    function updateActiveButton(activeSort) {
+        // Remove active class from all buttons
+        document.querySelectorAll('.sort-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+
+        // Add active class to current button
+        if (activeSort) {
+            document.querySelectorAll('.sort-btn').forEach(btn => {
+                if (btn.onclick.toString().includes(activeSort)) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+    }
+
+    function updateURL(sortValue) {
+        const url = new URL(window.location);
+        if (sortValue) {
+            url.searchParams.set('sort', sortValue);
+            updateResultsInfo(sortValue);
+        } else {
+            url.searchParams.delete('sort');
+            updateResultsInfo('');
+        }
+    }
+
+    function updateResultsInfo(sortValue) {
+        const infoElement = document.getElementById('resultsInfo');
+        const sortLabels = {
+            'price_low': 'sorted by price (low to high)',
+            'price_high': 'sorted by price (high to low)',
+            'newest': 'sorted by newest first',
+            'oldest': 'sorted by oldest first',
+            'title_az': 'sorted by title (A to Z)',
+            'title_za': 'sorted by title (Z to A)'
+        };
+
+        if (sortValue && sortLabels[sortValue]) {
+            infoElement.textContent = `Showing all properties ${sortLabels[sortValue]}`;
+        } else {
+            infoElement.textContent = 'Showing all properties';
+        }
+    }
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const currentSort = urlParams.get('sort');
+
+        if (currentSort) {
+            document.getElementById('sortSelect').value = currentSort;
+            updateActiveButton(currentSort);
+            updateResultsInfo(currentSort);
+        }
+    });
+</script>
 
 {% endblock %}

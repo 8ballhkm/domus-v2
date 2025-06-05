@@ -116,26 +116,51 @@ def listings(request):
     if furnishing:
         properties = properties.filter(furnishing=furnishing)
 
-    # Pagination
-    paginator = Paginator(properties, 15)  # Show 15 properties per page
+    sort_param = request.GET.get('sort', '')
+    
+    if sort_param == 'price_low':
+        properties = properties.order_by('price')
+    elif sort_param == 'price_high':
+        properties = properties.order_by('-price')
+    elif sort_param == 'newest':
+        properties = properties.order_by('-updated_at')  # Change to your date field name
+    elif sort_param == 'oldest':
+        properties = properties.order_by('updated_at')   # Change to your date field name
+    elif sort_param == 'title_az':
+        properties = properties.order_by('title')
+    elif sort_param == 'title_za':
+        properties = properties.order_by('-title')
+    else:
+        # Default sorting (keep your original order or add default)
+        properties = properties.order_by('-id')
+
+    # Your existing pagination logic
+    paginator = Paginator(properties, 10)  # Show 15 properties per page
     page = request.GET.get('page')
 
     try:
         properties_page = paginator.page(page)
     except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
         properties_page = paginator.page(1)
     except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
         properties_page = paginator.page(paginator.num_pages)
 
-    return render(request, 'listings.html', {'properties': properties_page, 'all_features': all_features})
+    # Updated context to include sorting info
+    context = {
+        'properties': properties_page, 
+        'all_features': all_features,
+        'selected_features': features,  # Pass the selected features
+        'current_sort': sort_param,     # Pass current sort for template
+        'request': request,             # Make request available in template
+    }
+
+    return render(request, 'listings.html', context)
 
 @login_required
 def listings2(request):
     properties = Listing.objects.all().prefetch_related('images')
     all_features = Feature.objects.all()
-    # Get the query parameters from the URL
+
     query = request.GET.get('q')
     location = request.GET.get('location')
     min_price = request.GET.get('min_price')
@@ -167,26 +192,57 @@ def listings2(request):
         properties = properties.filter(featured=True)
     if property_type:
         properties = properties.filter(type__icontains=property_type)  # Make sure you have this field in your model
-
     if listing_type:
         properties = properties.filter(listing_type=listing_type)
     if availability:
         properties = properties.filter(availability=availability)
     if features:
-        properties = properties.filter(features__name__in=features)
+        properties = properties.filter(features__id__in=features)
     if condition:
         properties = properties.filter(condition=condition)
     if furnishing:
         properties = properties.filter(furnishing=furnishing)
 
-    features = request.GET.getlist('features')
-    print("Selected features:", features)
+    sort_param = request.GET.get('sort', '')
+    
+    if sort_param == 'price_low':
+        properties = properties.order_by('price')
+    elif sort_param == 'price_high':
+        properties = properties.order_by('-price')
+    elif sort_param == 'newest':
+        properties = properties.order_by('-updated_at')  # Change to your date field name
+    elif sort_param == 'oldest':
+        properties = properties.order_by('updated_at')   # Change to your date field name
+    elif sort_param == 'title_az':
+        properties = properties.order_by('title')
+    elif sort_param == 'title_za':
+        properties = properties.order_by('-title')
+    else:
+        # Default sorting (keep your original order or add default)
+        properties = properties.order_by('-id')
 
-    if features:
-        properties = properties.filter(features__name__in=features)
+    # Your existing pagination logic
+    paginator = Paginator(properties, 10)  # Show 15 properties per page
+    page = request.GET.get('page')
+
+    try:
+        properties_page = paginator.page(page)
+    except PageNotAnInteger:
+        properties_page = paginator.page(1)
+    except EmptyPage:
+        properties_page = paginator.page(paginator.num_pages)
+
+    # Updated context to include sorting info
+    context = {
+        'properties': properties_page, 
+        'all_features': all_features,
+        'selected_features': features,  # Pass the selected features
+        'current_sort': sort_param,     # Pass current sort for template
+        'request': request,             # Make request available in template
+    }
 
 
-    return render(request, 'listings2.html', {'properties': properties, 'all_features': all_features})
+    return render(request, 'listings2.html', context)
 
 def property_detail(request, pk):
     listing = get_object_or_404(Listing, pk=pk)
