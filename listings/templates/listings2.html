@@ -221,7 +221,7 @@
                     <p class="property-price">RM{{ property.price|floatformat:2 }}</p>
                     <p class="property-description">{{ property.description|truncatewords:20 }}</p>
                     {% if property.id %}
-                        <a href="{% url 'property_detail' property.id %}" class="view-details-button">View Details</a>
+                        <a href="{% url 'property_detail2' property.id %}" class="view-details-button">View Details</a>
                     {% else %}
                         <span class="view-details-button disabled">No Details</span>
                     {% endif %}
