@@ -52,7 +52,7 @@
       </section>
 
     </article>
-<!-- <main class="dashboard">
+
     <div class="filter-card">
       <div class="filter-bar">
         <select><option>State</option></select>
@@ -72,27 +72,4 @@
         <label><input type="radio" name="type"> For Rent</label>
       </div>
     </div>
-
-    <section class="listing-grid">
-      {% for listing in listings %}
-      <div class="listing-card">
-        <div class="listing-image">
-          <img src="{{ listing.image.url }}" alt="Property image">
-          {% if listing.featured %}
-          <span class="badge">FEATURED</span>
-          {% endif %}
-        </div>
-        <div class="listing-info">
-          <h3>RM {{ listing.price }}</h3>
-          <p>{{ listing.location }}</p>
-          <p>{{ listing.size }}</p>
-          <p>{{ listing.description }}</p>
-          <button class="contact-btn">CONTACT SELLER</button>
-          <small>by {{ listing.agent }}</small>
-        </div>
-      </div>
-      {% endfor %}
-    </section>
-    
-  </main>-->
 {% endblock %}

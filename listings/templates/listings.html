@@ -2,77 +2,182 @@
 
 {% block content %}
 <section class="listing-section" id="listing-section">
-    <div id="searchFormContainer" style="display: none;">
-        <form method="get" action="{% url 'listings' %}">
-            <input type="text" name="q" placeholder="Search by title or description" value="{{ request.GET.q }}">
+    <div id="searchFormContainer">
+        <!-- Active Filters Display -->
+        <div id="activeFilters" class="active-filters" style="display: none;">
+            <h4>Active Filters:</h4>
+            <div class="filter-tags" id="filterTags"></div>
+        </div>
 
-            <select name="location">
-                <option value="">Select Location</option>
-                {% for state, label in properties.model.STATES %}
-                    <option value="{{ state }}" {% if state == request.GET.location %}selected{% endif %}>{{ label }}</option>
-                {% endfor %}
-            </select>
-        
-            <input type="number" name="min_price" placeholder="Min Price" value="{{ request.GET.min_price }}">
-            <input type="number" name="max_price" placeholder="Max Price" value="{{ request.GET.max_price }}">
-        
-            <select name="property_type">
-                <option value="">Select Property Type</option>
-                <option value="House" {% if 'House' == request.GET.property_type %}selected{% endif %}>House</option>
-                <option value="Apartment" {% if 'Apartment' == request.GET.property_type %}selected{% endif %}>Apartment</option>
-                <option value="Commercial" {% if 'Commercial' == request.GET.property_type %}selected{% endif %}>Commercial</option>
-                <option value="Land" {% if 'Land' == request.GET.property_type %}selected{% endif %}>Land</option>
-            </select>
-        
-            <select name="size">
-                <option value="">Select Room Size</option>
-                <option value="Small" {% if 'Small' == request.GET.size %}selected{% endif %}>Small</option>
-                <option value="Medium" {% if 'Medium' == request.GET.size %}selected{% endif %}>Medium</option>
-                <option value="Large" {% if 'Large' == request.GET.size %}selected{% endif %}>Large</option>
-                <option value="Master" {% if 'Master' == request.GET.size %}selected{% endif %}>Master</option>
-            </select>
-        
-            <input type="number" name="room_count" placeholder="Room Count" value="{{ request.GET.room_count }}">
+        <form class="search-form" method="get" action="/listings2/">
+            <!-- Search Query -->
+            <div class="form-group">
+                <label for="search-query">Search Properties</label>
+                <input type="text" id="search-query" name="q" class="form-input" 
+                       placeholder="Search by title or description" value="">
+            </div>
 
-            <select name="listing_type">
-                <option value="">Select Listing Type</option>
-                <option value="For Sale" {% if 'For Sale' == request.GET.listing_type %}selected{% endif %}>For Sale</option>
-                <option value="For Rent" {% if 'For Rent' == request.GET.listing_type %}selected{% endif %}>For Rent</option>
-                <option value="Auction" {% if 'Auction' == request.GET.listing_type %}selected{% endif %}>Auction</option>
-            </select>
-    
-            <select name="availability">
-                <option value="">Select Availability</option>
-                <option value="Immediate" {% if 'Immediate' == request.GET.availability %}selected{% endif %}>Immediate</option>
-                <option value="Coming Soon" {% if 'Coming Soon' == request.GET.availability %}selected{% endif %}>Coming Soon</option>
-            </select>
-    
-            <fieldset>
-                <legend>Property Features</legend>
-            
-                <button type="button" id="featureModalBtn" onclick="openFeatureModal()">Select Features</button>
+            <!-- Location -->
+            <div class="form-group">
+                <label for="location">Location</label>
+                <select id="location" name="location" class="form-select">
+                    <option value="">All Locations</option>
+                    <option value="kuala-lumpur">Kuala Lumpur</option>
+                    <option value="selangor">Selangor</option>
+                    <option value="penang">Penang</option>
+                    <option value="johor">Johor</option>
+                </select>
+            </div>
 
-                <p>Click the button to choose features</p>
-            </fieldset>
+            <!-- Price Range -->
+            <div class="form-group">
+                <label>Price Range (RM)</label>
+                <div class="price-range">
+                    <input type="number" name="min_price" class="form-input" 
+                           placeholder="Min Price" value="">
+                    <input type="number" name="max_price" class="form-input" 
+                           placeholder="Max Price" value="">
+                </div>
+            </div>
 
-            <select name="condition">
-                <option value="">Select Condition</option>
-                <option value="New" {% if 'New' == request.GET.condition %}selected{% endif %}>New</option>
-                <option value="Renovated" {% if 'Renovated' == request.GET.condition %}selected{% endif %}>Renovated</option>
-                <option value="Pre-owned" {% if 'Pre-owned' == request.GET.condition %}selected{% endif %}>Pre-owned</option>
-            </select>
-    
-            <select name="furnishing">
-                <option value="">Select Furnishing</option>
-                <option value="Unfurnished" {% if 'Unfurnished' == request.GET.furnishing %}selected{% endif %}>Unfurnished</option>
-                <option value="Partially Furnished" {% if 'Partially Furnished' == request.GET.furnishing %}selected{% endif %}>Partially Furnished</option>
-                <option value="Fully Furnished" {% if 'Fully Furnished' == request.GET.furnishing %}selected{% endif %}>Fully Furnished</option>
-            </select>
-            <label for="featured">Featured:</label>
-            <input type="checkbox" name="featured" {% if request.GET.featured == 'on' %}checked{% endif %}>
-            
-            <button type="submit" class="search-submit">Apply Filters</button>
+            <!-- Property Type -->
+            <div class="form-group">
+                <label for="property-type">Property Type</label>
+                <select id="property-type" name="property_type" class="form-select">
+                    <option value="">All Types</option>
+                    <option value="House">House</option>
+                    <option value="Apartment">Apartment</option>
+                    <option value="Commercial">Commercial</option>
+                    <option value="Land">Land</option>
+                </select>
+            </div>
+
+            <!-- Room Size -->
+            <div class="form-group">
+                <label for="room-size">Room Size</label>
+                <select id="room-size" name="size" class="form-select">
+                    <option value="">Any Size</option>
+                    <option value="Small">Small</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Large">Large</option>
+                    <option value="Master">Master</option>
+                </select>
+            </div>
+
+            <!-- Room Count -->
+            <div class="form-group">
+                <label for="room-count">Room Count</label>
+                <input type="number" id="room-count" name="room_count" class="form-input" 
+                       placeholder="Number of rooms" min="1" value="">
+            </div>
+
+            <!-- Listing Type -->
+            <div class="form-group">
+                <label for="listing-type">Listing Type</label>
+                <select id="listing-type" name="listing_type" class="form-select">
+                    <option value="">All Listings</option>
+                    <option value="For Sale">For Sale</option>
+                    <option value="For Rent">For Rent</option>
+                    <option value="Auction">Auction</option>
+                </select>
+            </div>
+
+            <!-- Availability -->
+            <div class="form-group">
+                <label for="availability">Availability</label>
+                <select id="availability" name="availability" class="form-select">
+                    <option value="">Any Availability</option>
+                    <option value="Immediate">Immediate</option>
+                    <option value="Coming Soon">Coming Soon</option>
+                </select>
+            </div>
+
+            <!-- Condition -->
+            <div class="form-group">
+                <label for="condition">Condition</label>
+                <select id="condition" name="condition" class="form-select">
+                    <option value="">Any Condition</option>
+                    <option value="New">New</option>
+                    <option value="Renovated">Renovated</option>
+                    <option value="Pre-owned">Pre-owned</option>
+                </select>
+            </div>
+
+            <!-- Furnishing -->
+            <div class="form-group">
+                <label for="furnishing">Furnishing</label>
+                <select id="furnishing" name="furnishing" class="form-select">
+                    <option value="">Any Furnishing</option>
+                    <option value="Unfurnished">Unfurnished</option>
+                    <option value="Partially Furnished">Partially Furnished</option>
+                    <option value="Fully Furnished">Fully Furnished</option>
+                </select>
+            </div>
+
+            <!-- Featured Checkbox -->
+            <div class="form-group">
+                <div class="checkbox-group">
+                    <input type="checkbox" id="featured" name="featured" class="checkbox-input">
+                    <label for="featured" class="checkbox-label">Featured Properties Only</label>
+                </div>
+            </div>
+
+            <!-- Property Features -->
+            <div class="features-section">
+                <div class="features-legend">Property Features</div>
+                <button type="button" class="features-button" onclick="openFeatureModal()">
+                    Select Features
+                </button>
+                <p class="features-description">Click to choose specific property features</p>
+                <div id="selectedFeaturesDisplay" class="filter-tags" style="margin-top: 12px;"></div>
+            </div>
+
+            <!-- Submit Buttons -->
+            <div class="submit-section">
+                <button type="submit" class="search-submit">Apply Filters</button>
+                <button type="button" class="clear-filters" onclick="clearAllFilters()">Clear All</button>
+            </div>
         </form>
+    </div>
+
+    <!-- Feature Selection Modal -->
+    <div id="featureModal" class="feature-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Select Property Features</h2>
+                <span class="close-modal" onclick="closeFeatureModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="modalFeatureForm" method="GET" action="{% url 'listings2' %}">
+                    <!-- Features populated from database -->
+                    {% for feature in all_features %}
+                        <label class="feature-option">
+                            <input type="checkbox" name="features" value="{{ feature.id }}" class="feature-checkbox"
+                                {% if feature.id|stringformat:"s" in selected_features %}checked{% endif %}>
+                            <span>{{ feature.name }}</span>
+                        </label>
+                    {% endfor %}
+                    
+                    <!-- Hidden fields to preserve other filter values -->
+                    <input type="hidden" name="q" value="{{ request.GET.q }}">
+                    <input type="hidden" name="location" value="{{ request.GET.location }}">
+                    <input type="hidden" name="min_price" value="{{ request.GET.min_price }}">
+                    <input type="hidden" name="max_price" value="{{ request.GET.max_price }}">
+                    <input type="hidden" name="property_type" value="{{ request.GET.property_type }}">
+                    <input type="hidden" name="size" value="{{ request.GET.size }}">
+                    <input type="hidden" name="room_count" value="{{ request.GET.room_count }}">
+                    <input type="hidden" name="listing_type" value="{{ request.GET.listing_type }}">
+                    <input type="hidden" name="availability" value="{{ request.GET.availability }}">
+                    <input type="hidden" name="condition" value="{{ request.GET.condition }}">
+                    <input type="hidden" name="furnishing" value="{{ request.GET.furnishing }}">
+                    {% if request.GET.featured == 'on' %}
+                        <input type="hidden" name="featured" value="on">
+                    {% endif %}
+                    
+                    <button type="button" class="modal-submit" onclick="applyFeatures()">Apply Features</button>
+                </form>
+            </div>
+        </div>
     </div>
 
     <div class="property-listing-container">
