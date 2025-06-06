@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from chat import views
-from listings.views import home, home2, aboutus, aboutus2, service, service2, add_listing, listings, listings2, property_detail, property_detail2, my_listings, edit_property, delete_property, debug_media
+from listings.views import home, home2, aboutus, aboutus2, service, service2, add_listing, listings, listings2, property_detail, property_detail2, my_listings, edit_property, delete_property, debug_media, simple_debug
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -42,7 +42,8 @@ urlpatterns = [
     path('api/chat/history/<int:partner_id>/', views.chat_history_api, name='chat_history_api'),
     path('edit_property/<uuid:id>/', edit_property, name='edit_property'),
     path('delete_property/<uuid:id>/', delete_property, name='delete_property'),
-        path('debug-media/', debug_media, name='debug_media'),
+    path('debug-media/', debug_media, name='debug_media'),
+    path('simple-debug/', simple_debug, name='simple_debug'),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 if settings.DEBUG or True:  # Always serve media files

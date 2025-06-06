@@ -9,8 +9,9 @@ import imagehash
 from PIL import Image
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.conf import settings
+
 import os
 
 
@@ -341,61 +342,87 @@ def delete_property(request, id):
     return render(request, 'delete_property.html', {'property': property})
 
 def debug_media(request):
-    """Debug view to check media configuration and file locations"""
-    debug_info = {
-        'MEDIA_ROOT': str(settings.MEDIA_ROOT),
-        'MEDIA_URL': settings.MEDIA_URL,
-        'DEBUG': settings.DEBUG,
-        'MEDIA_ROOT_EXISTS': os.path.exists(settings.MEDIA_ROOT),
-        'RAILWAY_ENVIRONMENT': os.environ.get('RAILWAY_ENVIRONMENT'),
-        'DATABASE_URL_EXISTS': 'DATABASE_URL' in os.environ,
-        'PORT': os.environ.get('PORT'),
-        'CURRENT_WORKING_DIR': os.getcwd(),
-        'BASE_DIR': str(settings.BASE_DIR),
-        'DIRECTORIES_INFO': {}
-    }
-    
-    # Check various directory paths
-    paths_to_check = [
-        '/app',
-        '/app/media',
-        '/mnt/storage',
-        '/mnt/storage/images',
-        str(settings.MEDIA_ROOT),
-        str(settings.BASE_DIR / 'media'),
-        '/var/lib/containers/railwayapp'
-    ]
-    
-    for path in paths_to_check:
-        debug_info['DIRECTORIES_INFO'][path] = {
-            'exists': os.path.exists(path),
-            'is_dir': os.path.isdir(path) if os.path.exists(path) else False,
-            'contents': []
-        }
-        
-        if os.path.exists(path) and os.path.isdir(path):
-            try:
-                contents = os.listdir(path)
-                debug_info['DIRECTORIES_INFO'][path]['contents'] = contents[:10]  # Limit to first 10 items
-            except Exception as e:
-                debug_info['DIRECTORIES_INFO'][path]['error'] = str(e)
-    
-    # Check if any property images exist
+    """Simple debug view to check media configuration"""
     try:
-        from listings.models import Property  # Adjust import based on your model location
-        properties_with_images = Property.objects.exclude(image='').exclude(image__isnull=True)[:5]
-        debug_info['SAMPLE_IMAGES'] = []
+        debug_info = {}
         
-        for prop in properties_with_images:
-            image_info = {
-                'property_id': str(prop.id),
-                'image_field': str(prop.image),
-                'image_url': prop.image.url if prop.image else None,
-                'image_path': prop.image.path if prop.image else None,
-                'file_exists': os.path.exists(prop.image.path) if prop.image else False
+        # Basic settings info
+        try:
+            debug_info['MEDIA_ROOT'] = str(settings.MEDIA_ROOT)
+            debug_info['MEDIA_URL'] = settings.MEDIA_URL
+            debug_info['DEBUG'] = settings.DEBUG
+        except Exception as e:
+            debug_info['SETTINGS_ERROR'] = str(e)
+        
+        # Environment info
+        try:
+            debug_info['ENV_VARS'] = {
+                'RAILWAY_ENVIRONMENT': os.environ.get('RAILWAY_ENVIRONMENT'),
+                'DATABASE_URL_EXISTS': 'DATABASE_URL' in os.environ,
+                'PORT': os.environ.get('PORT'),
             }
-            debug_info['SAMPLE_IMAGES'].append(image_info)
+        except Exception as e:
+            debug_info['ENV_ERROR'] = str(e)
+        
+        # Directory checks
+        try:
+            debug_info['DIRECTORIES'] = {}
+            paths_to_check = ['/app', '/app/media', '/mnt/storage', '/mnt/storage/images']
+            
+            for path in paths_to_check:
+                try:
+                    debug_info['DIRECTORIES'][path] = {
+                        'exists': os.path.exists(path),
+                        'is_dir': os.path.isdir(path) if os.path.exists(path) else False,
+                    }
+                    if os.path.exists(path) and os.path.isdir(path):
+                        debug_info['DIRECTORIES'][path]['contents_count'] = len(os.listdir(path))
+                except Exception as e:
+                    debug_info['DIRECTORIES'][path] = {'error': str(e)}
+        except Exception as e:
+            debug_info['DIRECTORY_CHECK_ERROR'] = str(e)
+        
+        # Media root specific check
+        try:
+            if hasattr(settings, 'MEDIA_ROOT'):
+                media_root = str(settings.MEDIA_ROOT)
+                debug_info['MEDIA_ROOT_CHECK'] = {
+                    'path': media_root,
+                    'exists': os.path.exists(media_root),
+                    'writable': os.access(media_root, os.W_OK) if os.path.exists(media_root) else False
+                }
+        except Exception as e:
+            debug_info['MEDIA_ROOT_ERROR'] = str(e)
+        
+        return JsonResponse(debug_info, indent=2)
+        
     except Exception as e:
-        debug_info['SAMPLE_IMAGES_ERROR'] = str(e)
+        # If JSON fails, return plain text
+        return HttpResponse(f"Debug error: {str(e)}", content_type="text/plain")
     
-    return JsonResponse(debug_info, indent=2)
+def simple_debug(request):
+    """Ultra simple debug view"""
+    try:
+        from django.conf import settings
+        
+        output = []
+        output.append("=== DJANGO MEDIA DEBUG ===")
+        output.append(f"MEDIA_ROOT: {getattr(settings, 'MEDIA_ROOT', 'NOT SET')}")
+        output.append(f"MEDIA_URL: {getattr(settings, 'MEDIA_URL', 'NOT SET')}")
+        output.append(f"DEBUG: {getattr(settings, 'DEBUG', 'NOT SET')}")
+        output.append("")
+        
+        output.append("=== ENVIRONMENT ===")
+        output.append(f"RAILWAY_ENVIRONMENT: {os.environ.get('RAILWAY_ENVIRONMENT', 'NOT SET')}")
+        output.append(f"DATABASE_URL exists: {'DATABASE_URL' in os.environ}")
+        output.append("")
+        
+        output.append("=== DIRECTORIES ===")
+        for path in ['/app', '/app/media', '/mnt/storage', '/mnt/storage/images']:
+            exists = os.path.exists(path)
+            output.append(f"{path}: {'EXISTS' if exists else 'NOT FOUND'}")
+        
+        return HttpResponse('\n'.join(output), content_type='text/plain')
+    
+    except Exception as e:
+        return HttpResponse(f"ERROR: {str(e)}", content_type='text/plain')
