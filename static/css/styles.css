@@ -2429,84 +2429,116 @@ label {
 }
 
 
+ .my-listings-section {
+   padding: 2rem 1rem;
+   background-color: var(--ivory-white);
+   min-height: 100vh;
+ }
 
-.my-listings-section {
-  padding: 40px 20px;
-  background-color: var(--ivory-white);
-}
+ .my-listing-container {
+   max-width: 1200px;
+   margin: 0 auto;
+ }
 
-.my-listing-container {
-  max-width: 900px;
-  margin: 0 auto;
-}
+ .section-title {
+   text-align: center;
+   font-size: 2.5rem;
+   color: var(--space-cadet);
+   margin-bottom: 2rem;
+   font-weight: 700;
+ }
 
-.my-listing-card {
-  background: var(--space-cadet);
-  border: 3px solid var(--gold);
-  padding: 20px;
-  margin-bottom: 20px;
-  border-radius: 10px;
-  display: flex;
-  gap: 20px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-  align-items: flex-start;
-  flex-wrap: wrap;
-}
+ /* Property Grid */
+ .property-listing-container {
+   display: grid;
+   grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+   gap: 2rem;
+   margin-top: 2rem;
+ }
 
-.my-listing-card img {
-  width: 200px;
-  height: 140px;
-  object-fit: cover;
-  border-radius: 8px;
-  border: 1px solid var(--gold);
-}
+ /* Empty State */
+ .empty-state {
+   text-align: center;
+   padding: 3rem;
+   color: var(--space-cadet);
+   font-size: 1.1rem;
+ }
 
-.my-listing-card h3 {
-  margin: 0;
-  font-size: 20px;
-  color: var(--gold);
-}
+ /* Responsive Design */
+ @media (max-width: 768px) {
+   .my-listings-section {
+     padding: 1.5rem 0.5rem;
+   }
 
-.my-listing-card p {
-  margin: 6px 0;
-  color: var(--gold);
-}
+   .section-title {
+     font-size: 2rem;
+     margin-bottom: 1.5rem;
+   }
 
-.my-listing-card a {
-  color: var(--gold);
-  text-decoration: none;
-  margin-right: 10px;
-}
+   .property-listing-container {
+     grid-template-columns: 1fr;
+     gap: 1.5rem;
+   }
 
-.my-listing-card a:hover {
-  text-decoration: underline;
-}
+   .property-card {
+     margin: 0 0.5rem;
+   }
 
-.my-listing-content {
-  flex: 1;
-  min-width: 200px;
-}
+   .property-details {
+     padding: 1rem;
+   }
 
+   .property-title {
+     font-size: 1.2rem;
+   }
 
-.button-group a.my-listings-edit-btn {
-  display: inline-block;
-  padding: 6px 12px;
-  background-color: #007bff;
-  color: white;
-  text-decoration: none;
-  border-radius: 5px;
-  margin-right: 8px;
-  font-size: 14px;
-  margin-top: 15px;
-}
+   .button-group {
+     flex-direction: column;
+   }
 
-.button-group a.my-listing-delete-btn {
-  background-color: #dc3545;
-}
+   .edit-button,
+   .delete-button {
+     width: 100%;
+     margin-bottom: 0.5rem;
+   }
+ }
 
-.button-group a.my-listings-edit-btn:hover {
-  opacity: 0.9;
-}
+ @media (max-width: 480px) {
+   .my-listings-section {
+     padding: 1rem 0.25rem;
+   }
+
+   .section-title {
+     font-size: 1.8rem;
+   }
+
+   .property-card {
+     margin: 0 0.25rem;
+   }
+
+   .property-image {
+     height: 150px;
+   }
+
+   .property-details {
+     padding: 0.75rem;
+   }
+
+   .property-title {
+     font-size: 1.1rem;
+   }
+
+   .property-price {
+     font-size: 1.1rem;
+   }
+ }
+
+ /* Large screens */
+ @media (min-width: 1200px) {
+   .property-listing-container {
+     grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+   }
+ }
 
 
 /* Floating Chat Button */
@@ -2790,7 +2822,6 @@ label {
     padding: 10px 20px;
     font-size: 1rem;
     cursor: pointer;
-    max-width: 88px;
     border-radius: 4px;
     transition: background-color 0.3s ease;
     margin-bottom: 10px;
@@ -2813,13 +2844,35 @@ label {
     cursor: pointer;
     border-radius: 4px;
     transition: background-color 0.3s ease;
+    text-align: center;
 }
 
 .delete-button:hover {
     background-color: #c0392b; /* Darker red on hover */
 }
 
+.edit-button,
+.delete-button {
+  background-color: var(--space-cadet);
+  color: var(--gold);
+  border: 1px solid var(--gold);
+  padding: 10px 20px;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  box-sizing: border-box;
+}
 
+/* Default: buttons take full width when not in button-group */
+.property-details .edit-button,
+.property-details .delete-button {
+  width: 100%;
+  margin-bottom: 0.5rem;
+}
 /* Modal styling */
 .modal {
     display: none;
