@@ -9,6 +9,10 @@ import imagehash
 from PIL import Image
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.http import JsonResponse
+from django.conf import settings
+import os
+
 
 def aboutus(request):
     return render(request, 'aboutus.html')
@@ -335,3 +339,63 @@ def delete_property(request, id):
         return redirect('my_listings')
 
     return render(request, 'delete_property.html', {'property': property})
+
+def debug_media(request):
+    """Debug view to check media configuration and file locations"""
+    debug_info = {
+        'MEDIA_ROOT': str(settings.MEDIA_ROOT),
+        'MEDIA_URL': settings.MEDIA_URL,
+        'DEBUG': settings.DEBUG,
+        'MEDIA_ROOT_EXISTS': os.path.exists(settings.MEDIA_ROOT),
+        'RAILWAY_ENVIRONMENT': os.environ.get('RAILWAY_ENVIRONMENT'),
+        'DATABASE_URL_EXISTS': 'DATABASE_URL' in os.environ,
+        'PORT': os.environ.get('PORT'),
+        'CURRENT_WORKING_DIR': os.getcwd(),
+        'BASE_DIR': str(settings.BASE_DIR),
+        'DIRECTORIES_INFO': {}
+    }
+    
+    # Check various directory paths
+    paths_to_check = [
+        '/app',
+        '/app/media',
+        '/mnt/storage',
+        '/mnt/storage/images',
+        str(settings.MEDIA_ROOT),
+        str(settings.BASE_DIR / 'media'),
+        '/var/lib/containers/railwayapp'
+    ]
+    
+    for path in paths_to_check:
+        debug_info['DIRECTORIES_INFO'][path] = {
+            'exists': os.path.exists(path),
+            'is_dir': os.path.isdir(path) if os.path.exists(path) else False,
+            'contents': []
+        }
+        
+        if os.path.exists(path) and os.path.isdir(path):
+            try:
+                contents = os.listdir(path)
+                debug_info['DIRECTORIES_INFO'][path]['contents'] = contents[:10]  # Limit to first 10 items
+            except Exception as e:
+                debug_info['DIRECTORIES_INFO'][path]['error'] = str(e)
+    
+    # Check if any property images exist
+    try:
+        from listings.models import Property  # Adjust import based on your model location
+        properties_with_images = Property.objects.exclude(image='').exclude(image__isnull=True)[:5]
+        debug_info['SAMPLE_IMAGES'] = []
+        
+        for prop in properties_with_images:
+            image_info = {
+                'property_id': str(prop.id),
+                'image_field': str(prop.image),
+                'image_url': prop.image.url if prop.image else None,
+                'image_path': prop.image.path if prop.image else None,
+                'file_exists': os.path.exists(prop.image.path) if prop.image else False
+            }
+            debug_info['SAMPLE_IMAGES'].append(image_info)
+    except Exception as e:
+        debug_info['SAMPLE_IMAGES_ERROR'] = str(e)
+    
+    return JsonResponse(debug_info, indent=2)
