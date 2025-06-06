@@ -52,13 +52,13 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'domus.urls'
@@ -156,6 +156,12 @@ STATICFILES_DIRS = [
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+WHITENOISE_USE_FINDERS = True
+WHITENOISE_AUTOREFRESH = True
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
@@ -166,7 +172,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Optional: Configure static files to be served from Railway Volume
 # If you want to serve static files from the volume too (adjust if necessary)
-STATIC_URL = '/static/'
 
 PROPERTY_IMAGES_DIR = os.path.join(MEDIA_ROOT, 'property_images')
 PROFILE_PICTURES_DIR = os.path.join(MEDIA_ROOT, 'profile_pictures')
