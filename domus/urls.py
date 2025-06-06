@@ -20,6 +20,26 @@ from chat import views
 from listings.views import home, home2, aboutus, aboutus2, service, service2, add_listing, listings, listings2, property_detail, property_detail2, my_listings, edit_property, delete_property, check_files, simple_debug
 from django.conf import settings
 from django.conf.urls.static import static
+from django.http import Http404
+from django.views.static import serve
+import os
+
+def custom_media_serve(request, path, document_root=None, show_indexes=False):
+    """
+    Custom media serving function that checks multiple directories
+    """
+    # Primary location (volume mount)
+    primary_path = os.path.join('/mnt/storage/images', path)
+    if os.path.exists(primary_path):
+        return serve(request, path, document_root='/mnt/storage/images', show_indexes=show_indexes)
+    
+    # Fallback location (app directory)
+    fallback_path = os.path.join('/app/media', path)
+    if os.path.exists(fallback_path):
+        return serve(request, path, document_root='/app/media', show_indexes=show_indexes)
+    
+    # If neither exists, return 404
+    raise Http404("Media file not found")
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -44,8 +64,7 @@ urlpatterns = [
     path('delete_property/<uuid:id>/', delete_property, name='delete_property'),
     path('check-files/', check_files, name='check_files'),
     path('simple-debug/', simple_debug, name='simple_debug'),
+    path('media/<path:path>', custom_media_serve, name='media'),
 ]
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-if settings.DEBUG or True:  # Always serve media files
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
