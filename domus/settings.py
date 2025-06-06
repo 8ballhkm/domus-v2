@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'users',
     'channels',
     'chat',
+    'storages',
 ]
 
 MIDDLEWARE = [
@@ -102,17 +103,82 @@ else:
         }
     }
 
-# Railway-specific settings
-if os.path.exists('/var/lib/containers/railwayapp'):
-    # Production settings for Railway - use the volume mount
-    MEDIA_ROOT = '/mnt/storage/images'
-    MEDIA_URL = '/media/'
-    print(f"Railway detected - MEDIA_ROOT set to: {MEDIA_ROOT}")
+USE_GCS = os.environ.get('USE_GCS', 'False').lower() == 'true'
+
+if USE_GCS:
+    # Production: Use Google Cloud Storage
+    DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+    
+    # GCS Settings
+    GS_BUCKET_NAME = os.environ.get('domus-storage-bucket')
+    GS_PROJECT_ID = os.environ.get('domus-461822')
+    
+    if all([
+        os.environ.get('GS_PRIVATE_KEY'),
+        os.environ.get('GS_CLIENT_EMAIL'),
+        os.environ.get('GS_PRIVATE_KEY_ID')
+    ]):
+        from google.oauth2 import service_account
+        credentials_info = {
+            "type": "service_account",
+            "project_id": GS_PROJECT_ID,
+            "private_key_id": os.environ.get('GS_PRIVATE_KEY_ID'),
+            "private_key": os.environ.get('GS_PRIVATE_KEY').replace('\\n', '\n'),
+            "client_email": os.environ.get('GS_CLIENT_EMAIL'),
+            "client_id": os.environ.get('GS_CLIENT_ID', ''),
+            "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+            "token_uri": "https://oauth2.googleapis.com/token",
+            "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+            "client_x509_cert_url": f"https://www.googleapis.com/robot/v1/metadata/x509/{os.environ.get('GS_CLIENT_EMAIL')}"
+        }
+        GS_CREDENTIALS = service_account.Credentials.from_service_account_info(credentials_info)
+    
+    # Option 2: Use full JSON from environment variable (if it fits)
+    elif os.environ.get('GS_CREDENTIALS_JSON'):
+        import json
+        from google.oauth2 import service_account
+        credentials_info = json.loads(os.environ.get('GS_CREDENTIALS_JSON'))
+        GS_CREDENTIALS = service_account.Credentials.from_service_account_info(credentials_info)
+    
+    # GCS Configuration
+    GS_DEFAULT_ACL = 'publicRead'  # Makes files publicly accessible
+    GS_FILE_OVERWRITE = False  # Don't overwrite files with same name
+    GS_MAX_MEMORY_SIZE = 1024 * 1024 * 5  # 5MB
+    GS_LOCATION = ''  # Root of bucket - we'll handle subfolders in upload_to
+    
+    # Media URL will be served from GCS
+    MEDIA_URL = f'https://storage.googleapis.com/{GS_BUCKET_NAME}/'
+    
+    # Define folder paths for GCS (used in models)
+    PROPERTY_IMAGES_FOLDER = 'property_images'
+    PROFILE_PICTURES_FOLDER = 'profile_pictures'
+    
+    print(f"Using Google Cloud Storage - Bucket: {GS_BUCKET_NAME}")
+    
 else:
-    # Local development settings
-    MEDIA_ROOT = BASE_DIR / 'media'
-    MEDIA_URL = '/media/'
-    print(f"Local development - MEDIA_ROOT set to: {MEDIA_ROOT}")
+    # Local development or Railway volume fallback
+    if os.path.exists('/var/lib/containers/railwayapp'):
+        # Production settings for Railway - use the volume mount
+        MEDIA_ROOT = '/mnt/storage/images'
+        MEDIA_URL = '/media/'
+        print(f"Railway detected - MEDIA_ROOT set to: {MEDIA_ROOT}")
+    else:
+        # Local development settings
+        MEDIA_ROOT = BASE_DIR / 'media'
+        MEDIA_URL = '/media/'
+        print(f"Local development - MEDIA_ROOT set to: {MEDIA_ROOT}")
+    
+    # Create directories for local/volume storage
+    if 'MEDIA_ROOT' in locals():
+        PROPERTY_IMAGES_DIR = os.path.join(MEDIA_ROOT, 'property_images')
+        PROFILE_PICTURES_DIR = os.path.join(MEDIA_ROOT, 'profile_pictures')
+        
+        # Define folder paths (used in models)
+        PROPERTY_IMAGES_FOLDER = 'property_images'
+        PROFILE_PICTURES_FOLDER = 'profile_pictures'
+        
+        os.makedirs(PROPERTY_IMAGES_DIR, exist_ok=True)
+        os.makedirs(PROFILE_PICTURES_DIR, exist_ok=True)
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
