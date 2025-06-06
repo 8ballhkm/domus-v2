@@ -384,10 +384,10 @@ def check_files(request):
             
             for prop in properties:
                 output.append(f"Property {prop.id}:")
-                output.append(f"  Image field: {prop.image}")
-                output.append(f"  Image URL: {prop.image.url}")
-                output.append(f"  Image path: {prop.image.path}")
-                output.append(f"  File exists: {os.path.exists(prop.image.path)}")
+                output.append(f"  Image field: {prop.images}")
+                output.append(f"  Image URL: {prop.images.url}")
+                output.append(f"  Image path: {prop.images.path}")
+                output.append(f"  File exists: {os.path.exists(prop.images.path)}")
         except Exception as e:
             output.append(f"Error checking database: {str(e)}")
         
