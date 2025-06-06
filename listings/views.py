@@ -378,8 +378,8 @@ def check_files(request):
         # Check database for image references
         output.append("\n=== DATABASE IMAGE REFERENCES ===")
         try:
-            from .models import Property
-            properties = Property.objects.exclude(image='').exclude(image__isnull=True)[:3]
+            from .models import Listing
+            properties = Listing.objects.exclude(image='').exclude(image__isnull=True)[:3]
             output.append(f"Properties with images in DB: {properties.count()}")
             
             for prop in properties:
