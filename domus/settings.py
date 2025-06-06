@@ -234,9 +234,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # If you want to serve static files from the volume too (adjust if necessary)
 STATIC_URL = '/static/'
 
-PROPERTY_IMAGES_DIR = os.path.join(MEDIA_ROOT, 'property_images')
-PROFILE_PICTURES_DIR = os.path.join(MEDIA_ROOT, 'profile_pictures')
-
 os.makedirs(PROPERTY_IMAGES_DIR, exist_ok=True)
 os.makedirs(PROFILE_PICTURES_DIR, exist_ok=True)
 
