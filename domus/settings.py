@@ -102,10 +102,15 @@ else:
         }
     }
 
-# Railway-specific settings
-if os.path.exists('/var/lib/containers/railwayapp'):
-    # Production settings for Railway - use the volume mount
-    MEDIA_ROOT = '/mnt/storage/images'
+RAILWAY_ENVIRONMENT = os.environ.get('RAILWAY_ENVIRONMENT')
+
+if RAILWAY_ENVIRONMENT:
+    # Production settings for Railway
+    # First try the volume mount, fallback to app directory
+    if os.path.exists('/mnt/storage'):
+        MEDIA_ROOT = '/mnt/storage/images'
+    else:
+        MEDIA_ROOT = '/app/media'
     MEDIA_URL = '/media/'
     print(f"Railway detected - MEDIA_ROOT set to: {MEDIA_ROOT}")
 else:
@@ -113,6 +118,7 @@ else:
     MEDIA_ROOT = BASE_DIR / 'media'
     MEDIA_URL = '/media/'
     print(f"Local development - MEDIA_ROOT set to: {MEDIA_ROOT}")
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
