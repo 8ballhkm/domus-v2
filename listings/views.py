@@ -341,64 +341,60 @@ def delete_property(request, id):
 
     return render(request, 'delete_property.html', {'property': property})
 
-def debug_media(request):
-    """Simple debug view to check media configuration"""
+def check_files(request):
+    """Check what files are actually in the media directories"""
     try:
-        debug_info = {}
+        output = []
+        output.append("=== FILES IN MEDIA DIRECTORIES ===")
         
-        # Basic settings info
-        try:
-            debug_info['MEDIA_ROOT'] = str(settings.MEDIA_ROOT)
-            debug_info['MEDIA_URL'] = settings.MEDIA_URL
-            debug_info['DEBUG'] = settings.DEBUG
-        except Exception as e:
-            debug_info['SETTINGS_ERROR'] = str(e)
+        directories_to_check = [
+            '/mnt/storage/images',
+            '/mnt/storage/images/property_images',
+            '/app/media',
+            '/app/media/property_images'
+        ]
         
-        # Environment info
-        try:
-            debug_info['ENV_VARS'] = {
-                'RAILWAY_ENVIRONMENT': os.environ.get('RAILWAY_ENVIRONMENT'),
-                'DATABASE_URL_EXISTS': 'DATABASE_URL' in os.environ,
-                'PORT': os.environ.get('PORT'),
-            }
-        except Exception as e:
-            debug_info['ENV_ERROR'] = str(e)
+        for directory in directories_to_check:
+            output.append(f"\n--- {directory} ---")
+            try:
+                if os.path.exists(directory):
+                    files = os.listdir(directory)
+                    if files:
+                        output.append(f"Files found: {len(files)}")
+                        # Show first 5 files
+                        for file in files[:5]:
+                            file_path = os.path.join(directory, file)
+                            size = os.path.getsize(file_path) if os.path.exists(file_path) else 0
+                            output.append(f"  - {file} ({size} bytes)")
+                        if len(files) > 5:
+                            output.append(f"  ... and {len(files) - 5} more files")
+                    else:
+                        output.append("Directory is empty")
+                else:
+                    output.append("Directory does not exist")
+            except Exception as e:
+                output.append(f"Error accessing directory: {str(e)}")
         
-        # Directory checks
+        # Check database for image references
+        output.append("\n=== DATABASE IMAGE REFERENCES ===")
         try:
-            debug_info['DIRECTORIES'] = {}
-            paths_to_check = ['/app', '/app/media', '/mnt/storage', '/mnt/storage/images']
+            from .models import Property
+            properties = Property.objects.exclude(image='').exclude(image__isnull=True)[:3]
+            output.append(f"Properties with images in DB: {properties.count()}")
             
-            for path in paths_to_check:
-                try:
-                    debug_info['DIRECTORIES'][path] = {
-                        'exists': os.path.exists(path),
-                        'is_dir': os.path.isdir(path) if os.path.exists(path) else False,
-                    }
-                    if os.path.exists(path) and os.path.isdir(path):
-                        debug_info['DIRECTORIES'][path]['contents_count'] = len(os.listdir(path))
-                except Exception as e:
-                    debug_info['DIRECTORIES'][path] = {'error': str(e)}
+            for prop in properties:
+                output.append(f"Property {prop.id}:")
+                output.append(f"  Image field: {prop.image}")
+                output.append(f"  Image URL: {prop.image.url}")
+                output.append(f"  Image path: {prop.image.path}")
+                output.append(f"  File exists: {os.path.exists(prop.image.path)}")
         except Exception as e:
-            debug_info['DIRECTORY_CHECK_ERROR'] = str(e)
+            output.append(f"Error checking database: {str(e)}")
         
-        # Media root specific check
-        try:
-            if hasattr(settings, 'MEDIA_ROOT'):
-                media_root = str(settings.MEDIA_ROOT)
-                debug_info['MEDIA_ROOT_CHECK'] = {
-                    'path': media_root,
-                    'exists': os.path.exists(media_root),
-                    'writable': os.access(media_root, os.W_OK) if os.path.exists(media_root) else False
-                }
-        except Exception as e:
-            debug_info['MEDIA_ROOT_ERROR'] = str(e)
-        
-        return JsonResponse(debug_info, indent=2)
-        
+        return HttpResponse('\n'.join(output), content_type='text/plain')
+    
     except Exception as e:
-        # If JSON fails, return plain text
-        return HttpResponse(f"Debug error: {str(e)}", content_type="text/plain")
+        return HttpResponse(f"ERROR: {str(e)}", content_type='text/plain')
     
 def simple_debug(request):
     """Ultra simple debug view"""
