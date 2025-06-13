@@ -30,7 +30,11 @@
   <!-- 
     - #HEADER
   -->
-
+  {% if not user.is_authenticated %}
+  <script>
+    window.location.href = "{% url 'home' %}";
+  </script>
+  {% endif %}
   <header class="header" data-header>
 
     <div class="overlay" data-overlay></div>
