@@ -29,7 +29,11 @@ def login_view(request):
 
 def logout_view(request):
     logout(request)
-    return redirect('home')
+    response = redirect('home')
+    response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    response['Pragma'] = 'no-cache'
+    response['Expires'] = '0'
+    return response
 
 @login_required
 def profile_view(request):
