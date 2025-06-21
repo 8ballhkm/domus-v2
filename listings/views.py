@@ -32,7 +32,7 @@ def service2(request):
 def home(request):
     latest_for_sale = Listing.objects.filter(listing_type='For Sale').order_by('-updated_at')[:5]
     latest_for_rent = Listing.objects.filter(listing_type='For Rent').order_by('-updated_at')[:5]
-    latest_listings = Listing.objects.order_by('-created_at')[:10]  
+    latest_listings = Listing.objects.order_by('-created_at')[:5]  
     
     context = {
         'latest_for_sale': latest_for_sale,
