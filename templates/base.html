@@ -90,22 +90,34 @@
               console.log("Button clicked!");
               const form = document.getElementById("searchFormContainer");
               if (form) {
-                form.style.display = form.style.display === "none" ? "block" : "none";
-                form.scrollIntoView({ behavior: "smooth" });
+                // Check computed style instead of inline style
+                const isHidden = window.getComputedStyle(form).display === "none";
+                form.style.display = isHidden ? "block" : "none";
+
+                if (isHidden) {
+                  form.scrollIntoView({ behavior: "smooth" });
+                }
               } else {
                 console.log("Form not found!");
               }
             }
-          
+
             function handleSearchClick(event) {
               const onListingsPage = window.location.pathname === "{% url 'listings' %}";
-              
+
               if (onListingsPage) {
-                event.preventDefault(); // Don't follow the link
+                event.preventDefault();
                 toggleSearch();
               }
-              // else: let the link redirect to the listings page
             }
+
+            // Initialize form state when page loads
+            document.addEventListener('DOMContentLoaded', function () {
+              const form = document.getElementById("searchFormContainer");
+              if (form && !form.style.display) {
+                form.style.display = "none"; // Set initial state
+              }
+            });
           </script>
 
           <div class="dropdown-container">

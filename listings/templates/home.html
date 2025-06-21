@@ -30,6 +30,115 @@
         </div>
       </section>
 
+      <section class="property" id="latest-listings">
+        <div class="container">
+          <p class="section-subtitle">Properties</p>
+          <h2 class="h2 section-title">Latest Listings</h2>
+
+          <ul class="property-list has-scrollbar">
+            {% for property in latest_listings %}
+            <li>
+              <div class="property-card">
+                {% if property.images.all %}
+                <img src="{{ property.images.first.image.url }}" alt="Property Image" class="property-image">
+                {% else %}
+                <img src="/path/to/default/image.jpg" alt="Default Property Image" class="property-image">
+                {% endif %}
+                <div class="property-details">
+                  <h2 class="property-title">{{ property.title }}</h2>
+                  <p class="property-location">{{ property.location }}</p>
+                  <p class="property-price">RM{{ property.price|floatformat:2 }}</p>
+                  <p class="property-description">{{ property.description|truncatewords:20 }}</p>
+                  {% if property.id %}
+                  <a href="{% url 'property_detail' property.id %}" class="view-details-button">View Details</a>
+                  {% else %}
+                  <span class="view-details-button disabled">No Details</span>
+                  {% endif %}
+                </div>
+              </div>
+            </li>
+            {% empty %}
+            <li>
+              <p>No properties available at the moment.</p>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </section>
+
+      <!-- Latest Properties for Sale Section -->
+      <section class="property" id="for-sale">
+        <div class="container">
+          <p class="section-subtitle">Properties</p>
+          <h2 class="h2 section-title">Latest Properties for Sale</h2>
+
+          <ul class="property-list has-scrollbar">
+            {% for property in latest_for_sale %}
+            <li>
+              <div class="property-card">
+                {% if property.images.all %}
+                <img src="{{ property.images.first.image.url }}" alt="Property Image" class="property-image">
+                {% else %}
+                <img src="/path/to/default/image.jpg" alt="Default Property Image" class="property-image">
+                {% endif %}
+                <div class="property-details">
+                  <h2 class="property-title">{{ property.title }}</h2>
+                  <p class="property-location">{{ property.location }}</p>
+                  <p class="property-price">RM{{ property.price|floatformat:2 }}</p>
+                  <p class="property-description">{{ property.description|truncatewords:20 }}</p>
+                  {% if property.id %}
+                  <a href="{% url 'property_detail' property.id %}" class="view-details-button">View Details</a>
+                  {% else %}
+                  <span class="view-details-button disabled">No Details</span>
+                  {% endif %}
+                </div>
+              </div>
+            </li>
+            {% empty %}
+            <li>
+              <p>No properties for sale available at the moment.</p>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </section>
+
+      <!-- Latest Properties for Rent Section -->
+      <section class="property" id="for-rent">
+        <div class="container">
+          <p class="section-subtitle">Properties</p>
+          <h2 class="h2 section-title">Latest Properties for Rent</h2>
+
+          <ul class="property-list has-scrollbar">
+            {% for property in latest_for_rent %}
+            <li>
+              <div class="property-card">
+                {% if property.images.all %}
+                <img src="{{ property.images.first.image.url }}" alt="Property Image" class="property-image">
+                {% else %}
+                <img src="/path/to/default/image.jpg" alt="Default Property Image" class="property-image">
+                {% endif %}
+                <div class="property-details">
+                  <h2 class="property-title">{{ property.title }}</h2>
+                  <p class="property-location">{{ property.location }}</p>
+                  <p class="property-price">RM{{ property.price|floatformat:2 }}/month</p>
+                  <p class="property-description">{{ property.description|truncatewords:20 }}</p>
+                  {% if property.id %}
+                  <a href="{% url 'property_detail' property.id %}" class="view-details-button">View Details</a>
+                  {% else %}
+                  <span class="view-details-button disabled">No Details</span>
+                  {% endif %}
+                </div>
+              </div>
+            </li>
+            {% empty %}
+            <li>
+              <p>No properties for rent available at the moment.</p>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </section>
 
       <section class="cta">
         <div class="container">

@@ -30,13 +30,29 @@ def service2(request):
     return render(request, 'service2.html')
 
 def home(request):
-    #listings = Listing.objects.all()
-    return render(request, 'home.html')
-#, {'listings': listings}
+    latest_for_sale = Listing.objects.filter(listing_type='sale').order_by('-updated_at')[:10]
+    latest_for_rent = Listing.objects.filter(listing_type='rent').order_by('-updated_at')[:10]
+    latest_listings = Listing.objects.order_by('-created_at')[:10]  
+    
+    context = {
+        'latest_for_sale': latest_for_sale,
+        'latest_for_rent': latest_for_rent,
+        'latest_listings': latest_listings,
+    }
+    return render(request, 'home.html', context)
 
 @login_required
 def home2(request):
-    return render(request, 'home2.html')
+    latest_for_sale = Listing.objects.filter(listing_type='sale').order_by('-updated_at')[:10]
+    latest_for_rent = Listing.objects.filter(listing_type='rent').order_by('-updated_at')[:10]
+    latest_listings = Listing.objects.order_by('-created_at')[:10]  
+    
+    context = {
+        'latest_for_sale': latest_for_sale,
+        'latest_for_rent': latest_for_rent,
+        'latest_listings': latest_listings,
+    }
+    return render(request, 'home2.html', context)
 
 @login_required
 def add_listing(request):
@@ -89,7 +105,7 @@ def listings(request):
     property_type = request.GET.get('property_type')
     listing_type = request.GET.get('listing_type')
     availability = request.GET.get('availability')
-    features = request.GET.getlist('features')  # Multiple values allowed
+    features = request.GET.getlist('features')
     condition = request.GET.get('condition')
     furnishing = request.GET.get('furnishing')
 
@@ -105,11 +121,11 @@ def listings(request):
     if size:
         properties = properties.filter(size__icontains=size)
     if room_type:
-        properties = properties.filter(size__icontains=room_type)  # Adjust as needed
+        properties = properties.filter(size__icontains=room_type)  
     if featured == 'on':
         properties = properties.filter(featured=True)
     if property_type:
-        properties = properties.filter(type__icontains=property_type)  # Make sure you have this field in your model
+        properties = properties.filter(property_type__icontains=property_type)  
     if listing_type:
         properties = properties.filter(listing_type=listing_type)
     if availability:
