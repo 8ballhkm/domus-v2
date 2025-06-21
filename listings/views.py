@@ -30,8 +30,8 @@ def service2(request):
     return render(request, 'service2.html')
 
 def home(request):
-    latest_for_sale = Listing.objects.filter(listing_type='sale').order_by('-updated_at')[:10]
-    latest_for_rent = Listing.objects.filter(listing_type='rent').order_by('-updated_at')[:10]
+    latest_for_sale = Listing.objects.filter(listing_type='For Sale').order_by('-updated_at')[:10]
+    latest_for_rent = Listing.objects.filter(listing_type='For Rent').order_by('-updated_at')[:10]
     latest_listings = Listing.objects.order_by('-created_at')[:10]  
     
     context = {
