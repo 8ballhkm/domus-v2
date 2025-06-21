@@ -156,7 +156,7 @@ def listings(request):
         properties = properties.order_by('-id')
 
     # Your existing pagination logic
-    paginator = Paginator(properties, 10)  # Show 15 properties per page
+    paginator = Paginator(properties, 9)  # Show 15 properties per page
     page = request.GET.get('page')
 
     try:
@@ -243,7 +243,7 @@ def listings2(request):
         properties = properties.order_by('-id')
 
     # Your existing pagination logic
-    paginator = Paginator(properties, 10)  # Show 15 properties per page
+    paginator = Paginator(properties, 9)  
     page = request.GET.get('page')
 
     try:
