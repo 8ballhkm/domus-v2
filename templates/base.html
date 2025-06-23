@@ -7,16 +7,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Domus - Real Estate Made Easy</title>
 
-  <!-- 
-    - custom css link
-    <link rel="stylesheet" href="./assets/css/style.css">
-  -->
   {% load static %}
   <link rel="stylesheet" href="{% static 'css/styles.css' %}?v=2">
 
-  <!-- 
-    - google font link
-  -->
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -26,9 +20,6 @@
 
 <body>
 
-  <!-- 
-    - #HEADER
-  -->
 
   <header class="header" data-header>
 
@@ -90,7 +81,6 @@
               console.log("Button clicked!");
               const form = document.getElementById("searchFormContainer");
               if (form) {
-                // Check computed style instead of inline style
                 const isHidden = window.getComputedStyle(form).display === "none";
                 form.style.display = isHidden ? "block" : "none";
 
@@ -111,11 +101,11 @@
               }
             }
 
-            // Initialize form state when page loads
+            
             document.addEventListener('DOMContentLoaded', function () {
               const form = document.getElementById("searchFormContainer");
               if (form && !form.style.display) {
-                form.style.display = "none"; // Set initial state
+                form.style.display = "none"; 
               }
             });
           </script>

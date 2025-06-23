@@ -109,14 +109,14 @@ function startChat(ownerId) {
     return;
   }
   
-  // Compose room name with smaller ID first to keep consistent room naming
+
   const roomName = currentUserId < ownerId
     ? `${currentUserId}_${ownerId}`
     : `${ownerId}_${currentUserId}`;
   
-  // Open the chat room panel and connect WebSocket
+
   toggleChatPanel();
-  openChatRoom(ownerId, `User ${ownerId}`);  // pass owner's name if you have it, else placeholder
+  openChatRoom(ownerId, `User ${ownerId}`);  
 }
 
 async function openChatRoom(partnerId, partnerUsername) {
@@ -138,7 +138,7 @@ async function openChatRoom(partnerId, partnerUsername) {
   currentPartnerName = partnerUsername;
   currentRoomName = currentUserId < partnerId ? `${currentUserId}_${partnerId}` : `${partnerId}_${currentUserId}`;
 
-  // Show chat window
+
   document.getElementById('chat-window').style.display = 'flex';
   document.getElementById('chat-header').textContent = `Chat with ${partnerUsername}`;
   document.getElementById('chat-messages').innerHTML = '';
@@ -151,7 +151,7 @@ async function openChatRoom(partnerId, partnerUsername) {
     const response = await fetch(`/api/chat/history/${partnerId}/`);
     const data = await response.json();
 
-    messagesContainer.innerHTML = ''; // Clear loading text
+    messagesContainer.innerHTML = ''; 
 
     data.messages.forEach(msg => {
       const msgDiv = document.createElement('div');
@@ -165,7 +165,7 @@ async function openChatRoom(partnerId, partnerUsername) {
     console.error('Failed to load chat history:', error);
   }
 
-   // Determine the WebSocket protocol based on the current page protocol
+  
   const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
   const wsUrl = `${protocol}//${window.location.host}/ws/chat/${currentRoomName}/`;
   
@@ -236,7 +236,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (input) {
     input.addEventListener('keydown', function(event) {
       if (event.key === 'Enter') {
-        event.preventDefault();  // prevent newline
+        event.preventDefault();  
         sendMessage();
       }
     });
@@ -247,37 +247,37 @@ document.addEventListener('DOMContentLoaded', () => {
 /**
  * Property Image
  */
-let currentImageIndex = 0;  // Track the current image index
+let currentImageIndex = 0;  
 let images = JSON.parse(document.getElementById('imageUrls').textContent);
 
 
-// Open the modal when the image is clicked
+
 function openModal() {
     document.getElementById("imageModal").style.display = "block";
-    displayImage(currentImageIndex);  // Display the first image when modal opens
+    displayImage(currentImageIndex);  
 }
 
-// Close the modal
+
 function closeModal() {
     document.getElementById("imageModal").style.display = "none";
     displayImage(currentImageIndex);
 }
 
-// Change the image when the user clicks next/prev
+
 function changeImage(direction) {
     currentImageIndex += direction;
 
-    // Ensure the index stays within bounds
+    
     if (currentImageIndex >= images.length) {
-        currentImageIndex = 0;  // Loop back to the first image
+        currentImageIndex = 0;  
     } else if (currentImageIndex < 0) {
-        currentImageIndex = images.length - 1;  // Loop back to the last image
+        currentImageIndex = images.length - 1;  
     }
 
-    displayImage(currentImageIndex);  // Show the new image
+    displayImage(currentImageIndex);  
 }
 
-// Display the image in the modal
+
 function displayImage(index) {
     const modalImage = document.getElementById("modalImage");
     modalImage.src = images[index];
@@ -289,74 +289,69 @@ function toggleDeleteIndicator(checkbox, imageId) {
     const imageItem = document.getElementById(`image-item-${imageId}`);
     const checkmark = document.getElementById(`checkmark-${imageId}`);
     
-    // If checkbox is checked, show the checkmark and change the background color
+    
     if (checkbox.checked) {
-        checkmark.style.display = 'inline';  // Show the checkmark
-        imageItem.style.backgroundColor = '#f8f9fa';  // Light gray background when selected
+        checkmark.style.display = 'inline';  
+        imageItem.style.backgroundColor = '#f8f9fa';  
     } else {
-        checkmark.style.display = 'none';  // Hide the checkmark
-        imageItem.style.backgroundColor = '';  // Remove the background color
-    }
+        checkmark.style.display = 'none'; 
+        imageItem.style.backgroundColor = '';  
 }
 
 
-// Function to open the feature modal
 function openFeatureModal() {
-    var featureModal = document.getElementById("featureModal"); // Select feature modal
-    featureModal.style.display = "block";  // Make the feature modal visible
+    var featureModal = document.getElementById("featureModal"); 
+    featureModal.style.display = "block";  
 }
 
-// Function to close the feature modal
+
 function closeFeatureModal() {
-    var featureModal = document.getElementById("featureModal"); // Select feature modal
-    featureModal.style.display = "none";  // Hide the feature modal
+    var featureModal = document.getElementById("featureModal"); 
+    featureModal.style.display = "none";  
 }
 
-// Event listener for the close button inside the feature modal
-document.addEventListener("DOMContentLoaded", function () {
-    var closeButton = document.querySelector(".close-feature");  // Select close button inside the feature modal
 
-    // When the close button is clicked, close the modal
+document.addEventListener("DOMContentLoaded", function () {
+    var closeButton = document.querySelector(".close-feature");
+
     if (closeButton) {
         closeButton.onclick = function() {
-            closeFeatureModal();  // Close the feature modal when clicked
+            closeFeatureModal();
         };
     }
 
-    // Close the modal if clicked outside the modal content
+  
     window.onclick = function(event) {
         var featureModal = document.querySelector(".feature-modal");
         if (event.target === featureModal) {
-            closeFeatureModal();  // Close feature modal if clicked outside
+            closeFeatureModal();
         }
     }
 
-    // Handle form submission (when apply button is clicked)
     document.getElementById("modalFeatureForm").onsubmit = function (event) {
-        event.preventDefault();  // Prevent the form from submitting the default way
+        event.preventDefault();
 
         var selectedFeatures = [];
-        var checkboxes = document.querySelectorAll('input[name="features[]"]:checked'); // Collect all checked checkboxes
+        var checkboxes = document.querySelectorAll('input[name="features[]"]:checked');
         checkboxes.forEach(function (checkbox) {
-            selectedFeatures.push(checkbox.value);  // Add each selected feature to the array
+            selectedFeatures.push(checkbox.value);
         });
 
-        // If no feature is selected, don't submit
+
         if (selectedFeatures.length === 0) {
             alert("Please select at least one feature.");
             return;
         }
 
-        // Create a hidden input to append to the form and submit the selected features
         var featureInput = document.createElement("input");
         featureInput.type = "hidden";
-        featureInput.name = "features";  // Use the same name as the query parameter
-        featureInput.value = selectedFeatures.join(',');  // Join the selected features as a comma-separated string
+        featureInput.name = "features"; 
+        featureInput.value = selectedFeatures.join(',');
         document.querySelector('form').appendChild(featureInput);
 
-        // Close the modal and submit the form
+        
         closeFeatureModal();
-        document.querySelector('form').submit();  // Submit the form
+        document.querySelector('form').submit();
     };
 });
 

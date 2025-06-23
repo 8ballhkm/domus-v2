@@ -4285,7 +4285,7 @@ span.step-links{
   -webkit-box-orient: vertical;
   overflow: hidden;
   line-height: 1.4;
-  min-height: 4.2em; /* Ensures consistent spacing */
+  min-height: 4.2em; 
 }
 
 @media (min-width: 769px) {
