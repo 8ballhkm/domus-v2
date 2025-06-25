@@ -355,4 +355,3 @@ document.addEventListener("DOMContentLoaded", function () {
         document.querySelector('form').submit();
     };
 });
-}

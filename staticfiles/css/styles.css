@@ -336,7 +336,10 @@
     padding-block: 25px;
   }
   
-  .header-bottom .logo img { margin-inline: auto; }
+  .header-bottom .logo img { 
+    height: 55px;  
+    margin-inline: auto; 
+  }
   
   .navbar {
     background: var(--white);
@@ -667,6 +670,7 @@
     text-align: center;
     padding: 40px 30px;
     box-shadow: var(--shadow-2);
+    height: 500px;
   }
   
   .service-card .card-icon {
@@ -4062,3 +4066,4 @@ label {
     flex-wrap: wrap;
   }
 }
+

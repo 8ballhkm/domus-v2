@@ -10,30 +10,6 @@
 
       <ul class="service-list">
 
-        <li>
-          <div class="service-card">
-
-            <div class="card-icon">
-              <img src="{% static 'images/service-1.png' %}" alt="Service icon">
-            </div>
-
-            <h3 class="h3 card-title">
-              <a href="#">Buy a home</a>
-            </h3>
-
-            <p class="card-text">
-              over 1 million+ homes for sale available on the website, we can match you with a house you will want
-              to call home.
-            </p>
-
-            <a href="#" class="card-link">
-              <span>Find A Home</span>
-
-              <ion-icon name="arrow-forward-outline"></ion-icon>
-            </a>
-
-          </div>
-        </li>
 
         <li>
           <div class="service-card">
@@ -43,15 +19,15 @@
             </div>
 
             <h3 class="h3 card-title">
-              <a href="#">Rent a home</a>
+              <a href="{% url 'listings2' %}">Find a home</a>
             </h3>
 
             <p class="card-text">
-              over 1 million+ homes for sale available on the website, we can match you with a house you will want
+              over 1 million+ homes available on the website, we can match you with a place you will want
               to call home.
             </p>
 
-            <a href="#" class="card-link">
+            <a href="{% url 'listings2' %}" class="card-link">
               <span>Find A Home</span>
 
               <ion-icon name="arrow-forward-outline"></ion-icon>
@@ -68,16 +44,15 @@
             </div>
 
             <h3 class="h3 card-title">
-              <a href="#">Sell a home</a>
+              <a href="{% url 'add_listing' %}">list a home</a>
             </h3>
 
             <p class="card-text">
-              over 1 million+ homes for sale available on the website, we can match you with a house you will want
-              to call home.
+              over 1 million+ homes for sale on the website, we can help you sell yours. Join us today.
             </p>
 
-            <a href="#" class="card-link">
-              <span>Find A Home</span>
+            <a href="{% url 'add_listing' %}" class="card-link">
+              <span>List A Home</span>
 
               <ion-icon name="arrow-forward-outline"></ion-icon>
             </a>
