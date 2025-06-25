@@ -4101,7 +4101,7 @@ span.step-links{
 
 .logo img {
     width: clamp(50px, 5vw, 120px); /* Much smaller: min 50px, max 120px */
-    height: auto;
+    height: 55px;
     object-fit: contain;
 }
 
