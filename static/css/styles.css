@@ -674,6 +674,7 @@
     text-align: center;
     padding: 40px 30px;
     box-shadow: var(--shadow-2);
+    height: 500px;
   }
   
   .service-card .card-icon {
