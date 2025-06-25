@@ -296,6 +296,7 @@ function toggleDeleteIndicator(checkbox, imageId) {
     } else {
         checkmark.style.display = 'none'; 
         imageItem.style.backgroundColor = '';  
+      }
 }
 
 
@@ -354,6 +355,4 @@ document.addEventListener("DOMContentLoaded", function () {
         document.querySelector('form').submit();
     };
 });
-
-
-
+}
