@@ -232,22 +232,31 @@
         {% endfor %}
     </div>
     <div class="pagination">
-        <span class="step-links">
-            {% if properties.has_previous %}
-                <a href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page=1" class="pagination-link">&laquo; first</a>
-                <a href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ properties.previous_page_number }}" class="pagination-link">previous</a>
-            {% endif %}
-
-
-            {% if properties.has_next %}
-                <a href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ properties.next_page_number }}" class="pagination-link">next</a>
-                <a href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ properties.paginator.num_pages }}" class="pagination-link">last &raquo;</a>
-            {% endif %}
-
-            <span class="current">
-                Page {{ properties.number }} of {{ properties.paginator.num_pages }}.
-            </span>
-        </span>
+        {% if properties.has_previous %}
+        <a href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page=1"
+            class="pagination-link">&laquo; First</a>
+        <a href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ properties.previous_page_number }}"
+            class="pagination-link">Previous</a>
+        {% else %}
+        <span class="pagination-link disabled">&laquo; First</span>
+        <span class="pagination-link disabled">Previous</span>
+        {% endif %}
+    
+        <span class="current-page">{{ properties.number }}</span>
+    
+        {% if properties.has_next %}
+        <a href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ properties.next_page_number }}"
+            class="pagination-link">Next</a>
+        <a href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ properties.paginator.num_pages }}"
+            class="pagination-link">Last &raquo;</a>
+        {% else %}
+        <span class="pagination-link disabled">Next</span>
+        <span class="pagination-link disabled">Last &raquo;</span>
+        {% endif %}
+    
+        <div class="page-info">
+            Page {{ properties.number }} of {{ properties.paginator.num_pages }}
+        </div>
     </div>
 </section>
 
