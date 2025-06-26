@@ -1703,7 +1703,6 @@ input[type="checkbox"] {
 }
 
 .property {
-    margin-bottom: 3rem;
     background-color: var(--ivory-white);
 }
 
@@ -4176,7 +4175,6 @@ span.step-links{
 }
 
 .property {
-    margin-bottom: 3rem;
     background-color: var(--ivory-white);
 }
 
