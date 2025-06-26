@@ -238,14 +238,15 @@
                 <a href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ properties.previous_page_number }}" class="pagination-link">previous</a>
             {% endif %}
 
-            <span class="current">
-                Page {{ properties.number }} of {{ properties.paginator.num_pages }}.
-            </span>
 
             {% if properties.has_next %}
                 <a href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ properties.next_page_number }}" class="pagination-link">next</a>
                 <a href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ properties.paginator.num_pages }}" class="pagination-link">last &raquo;</a>
             {% endif %}
+
+            <span class="current">
+                Page {{ properties.number }} of {{ properties.paginator.num_pages }}.
+            </span>
         </span>
     </div>
 </section>
